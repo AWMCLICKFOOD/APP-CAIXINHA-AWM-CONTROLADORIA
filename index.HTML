@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Caixinha WM - App</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icone.png">
+    <style>
+        :root {
+            --azul-wm: #1a233a; 
+            --laranja-wm: #f39c12; 
+            --verde-pos: #28a745;
+            --vermelho-neg: #dc3545;
+            --fundo: #f4f7f6;
+        }
+        body { font-family: Arial, sans-serif; background-color: #ccc; margin: 0; display: flex; justify-content: center; padding: 10px; }
+        .app-container { width: 100%; max-width: 500px; background-color: var(--fundo); min-height: 95vh; border: 8px solid; border-image: linear-gradient(to right, var(--azul-wm) 50%, var(--laranja-wm) 50%) 1; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box; position: relative; }
+        
+        header { background-color: white; color: var(--azul-wm); padding: 15px 10px; text-align: center; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 10px; border-bottom: 2px solid #ddd; }
+        
+        .logos-container { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 15px; width: 100%; }
+        .logo-wm { width: 45%; max-width: 200px; height: auto; }
+        .logo-controladoria { width: 45%; max-width: 200px; height: auto; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .titulo-header { font-size: 15px; color: var(--laranja-wm); margin-top: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+
+        .painel-saldo, .formulario, .area-acoes { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .linha-saldo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; }
+        .saldo-atual { font-size: 20px; font-weight: bold; text-align: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+        .positivo { color: var(--verde-pos); }
+        .negativo { color: var(--vermelho-neg); }
+        
+        .formulario { display: flex; flex-direction: column; gap: 10px; }
+        label { font-size: 12px; font-weight: bold; color: #555; margin-top: 5px; }
+        .aviso-sinal { font-size: 10px; color: #d35400; font-weight: normal; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        
+        .btn-salvar { background-color: var(--azul-wm); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-ver-planilha { background-color: var(--laranja-wm); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px;}
+        
+        .area-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
+        .btn-pausar { background-color: #17a2b8; color: white; border: none; padding: 12px; font-size: 14px; border-radius: 5px; cursor: pointer; flex: 1 1 100%; font-weight: bold; }
+        .btn-whats { background-color: #25D366; color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; cursor: pointer; flex: 1; font-weight: bold; }
+        .btn-fechar { background-color: #333; color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; cursor: pointer; flex: 1; font-weight: bold; }
+
+        #tela-planilha { display: none; padding: 10px; background: white; min-height: 90vh; }
+        .tabela-container { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle; }
+        th { background-color: var(--azul-wm); color: white; }
+        .foto-miniatura { width: 45px; height: 45px; object-fit: cover; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; display: block; margin-top: 5px; }
+        .txt-falta { color: var(--vermelho-neg); font-weight: bold; font-size: 10px; display: block; margin-top: 2px; }
+        .btn-voltar { background-color: #555; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 10px; }
+
+        #modal-foto { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
+        #foto-ampliada { max-width: 90%; max-height: 80%; border: 3px solid white; }
+        .btn-fechar-modal { margin-top: 15px; background: var(--vermelho-neg); color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+
+        .cabecalho-oficial { display: none; background: #fdf5e6; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; font-size: 14px; }
+
+        @media print {
+            .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha { display: none !important; }
+            body { background-color: white; padding: 0; }
+            .app-container { border: none; box-shadow: none; max-width: 100%; }
+            th:last-child, td:last-child { display: none; } /* Esconde a lixeira e o lápis no PDF */
+            .cabecalho-oficial { display: block; } /* Mostra o cabeçalho no PDF */
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div id="tela-principal">
+        <header>
+            <div class="logos-container">
+                <img src="LOGOTIPO.jpg" alt="WM Construções" class="logo-wm">
+                <img src="Captura de tela 2026-02-13 132630.jpg" alt="Anderson Rezende" class="logo-controladoria">
+            </div>
+            <div class="titulo-header">✨ GESTÃO INTELIGENTE DE CAIXINHA ✨</div>
+        </header>
+
+        <div class="painel-saldo">
+            <div class="linha-saldo" style="background: #fdf5e6; padding: 8px; border-radius: 4px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <label style="color: var(--laranja-wm); font-size: 14px; margin: 0;">Nº da Requisição:</label>
+                    <input type="text" id="num-caixinha" placeholder="Ex: 14" style="width: 80px; text-align: center; font-weight: bold;" onchange="salvarCabecalho()">
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <label style="font-size: 14px; margin: 0;">Gestor:</label>
+                    <input type="text" id="nome-gestor" placeholder="Nome do Gestor" style="width: 150px; text-align: right;" onchange="salvarCabecalho()">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; width: 100%; border-top: 1px solid #ddd; padding-top: 8px;">
+                    <span style="font-size: 14px; font-weight: bold; color: #555;">Auditor:</span>
+                    <span style="font-size: 14px; font-weight: bold;">Anderson</span>
+                </div>
+            </div>
+
+            <div class="linha-saldo" style="margin-top: 15px;">
+                <label>Saldo Anterior: <br><span class="aviso-sinal">(se for negativo, coloque o sinal de - antes do valor)</span></label>
+                <input type="number" id="saldo-anterior" step="0.01" style="width: 100px; text-align: right;" onchange="salvarCabecalho()">
+            </div>
+            <div class="linha-saldo" style="color: var(--verde-pos);">
+                <span>Total Créditos WM:</span>
+                <span id="total-creditos" style="font-weight: bold;">R$ 0,00</span>
+            </div>
+            <div class="linha-saldo" style="color: var(--vermelho-neg);">
+                <span>Total Gasto:</span>
+                <span id="total-gasto" style="font-weight: bold;">R$ 0,00</span>
+            </div>
+            <div class="saldo-atual" id="saldo-atual-display">SALDO ATUAL: R$ 0,00</div>
+        </div>
+
+        <div class="formulario">
+            <label>Categoria:</label>
+            <select id="categoria">
+                <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGEM">CRÉDITO WM CONSTRUÇÕES E MONTAGEM</option>
+                <option value="Alimentação">Alimentação</option>
+                <option value="Hospedagem">Hospedagem</option>
+                <option value="Combustível">Combustível</option>
+                <option value="Outras Despesas">Outras Despesas</option>
+            </select>
+
+            <label>Data:</label>
+            <input type="date" id="data">
+
+            <label>Descrição do Gasto / Crédito:</label>
+            <input type="text" id="desc" placeholder="Ex: Almoço / Adiantamento WM">
+
+            <label>Valor (R$):</label>
+            <input type="number" id="valor" step="0.01" placeholder="0.00">
+
+            <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
+                <label>Tipo de Documento Fiscal:</label>
+                <select id="tipo-doc">
+                    <option value="Sem Doc Fiscal">🚨 SEM DOCUMENTO FISCAL (FALTANDO)</option>
+                    <option value="NF-e">NF-e - Nota Fiscal Eletrônica</option>
+                    <option value="NFC-e">NFC-e - Nota de Consumidor Eletrônica</option>
+                    <option value="NFS-e">NFS-e - Nota Fiscal de Serviço Eletrônica</option>
+                    <option value="CT-e">CT-e - Conhecimento de Transporte</option>
+                    <option value="MDF-e">MDF-e - Manifesto de Documentos Fiscais</option>
+                    <option value="BP-e">BP-e - Bilhete de Passagem Eletrônico</option>
+                    <option value="CF-e / SAT">CF-e / SAT - Cupom Fiscal Eletrônico</option>
+                    <option value="NFA-e">NFA-e - Nota Fiscal Avulsa Eletrônica</option>
+                    <option value="Nota Produtor Rural">Nota Fiscal de Produtor Rural</option>
+                    <option value="Conta Energia">Conta de Energia Elétrica</option>
+                    <option value="Conta Água/Esgoto">Conta de Água/Esgoto</option>
+                    <option value="Conta Telecom">Conta de Telecomunicação/Internet</option>
+                    <option value="Conta Gás">Conta de Fornecimento de Gás</option>
+                    <option value="RPA">RPA - Recibo de Pagamento a Autônomo</option>
+                    <option value="Recibo">Recibo</option>
+                    <option value="Comanda">Comanda</option>
+                    <option value="Orçamento">Orçamento</option>
+                    <option value="Outros">Outros Documentos Fiscais</option>
+                </select>
+                <label>📸 Anexar Foto da Nota Fiscal:</label>
+                <input type="file" id="foto-doc" accept="image/*" capture="environment">
+            </div>
+
+            <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
+                <label>Forma de Pagamento:</label>
+                <select id="forma-pagto">
+                    <option value="Sem Comprovante Pagto">🚨 SEM DOCUMENTO DE PAGAMENTO (FALTANDO)</option>
+                    <option value="PIX">PIX</option>
+                    <option value="Cartão Débito">Cartão de Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                </select>
+                <label>📸 Anexar Foto do Pagamento:</label>
+                <input type="file" id="foto-pagto" accept="image/*" capture="environment">
+            </div>
+
+            <button class="btn-salvar" onclick="salvarDespesa()">➕ Salvar na Lista</button>
+            <button class="btn-ver-planilha" onclick="abrirPlanilha()">📊 Ver como está a Planilha</button>
+        </div>
+
+        <div class="area-acoes">
+            <button class="btn-pausar" onclick="pausarApp()">💾 Salvar e Pausar Caixinha</button>
+            <button class="btn-whats" onclick="compartilharApp()">📲 Enviar Whats/Teams</button>
+            <button class="btn-fechar" onclick="gerarPDF()">📄 Finalizar e PDF</button>
+        </div>
+    </div>
+
+    <div id="tela-planilha">
+        <button class="btn-voltar" onclick="voltarPrincipal()">⬅ Voltar para Lançamentos</button>
+        
+        <div class="cabecalho-oficial" id="cabecalho-pdf">
+            <strong>EMPRESA:</strong> WM CONSTRUÇÕES E MONTAGENS <br>
+            <strong>GESTOR:</strong> <span id="print-gestor"></span> <br>
+            <strong>AUDITOR:</strong> Anderson <br>
+            <strong>Nº REQUISIÇÃO:</strong> <span id="print-num"></span>
+        </div>
+
+        <h3 style="color: var(--azul-wm); text-align: center;">Planilha de Lançamentos</h3>
+        
+        <div class="tabela-container">
+            <table id="tabela-dados">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Nota Fiscal</th>
+                        <th>Pagamento</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modal-foto">
+        <img id="foto-ampliada" src="">
+        <button class="btn-fechar-modal" onclick="fecharModal()">Fechar Imagem</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('data').valueAsDate = new Date();
+    let bancoDespesas = JSON.parse(localStorage.getItem('wm_despesas')) || [];
+
+    document.getElementById('num-caixinha').value = localStorage.getItem('wm_num') || '';
+    document.getElementById('nome-gestor').value = localStorage.getItem('wm_gestor') || '';
+    document.getElementById('saldo-anterior').value = localStorage.getItem('wm_anterior') || '';
+
+    function salvarCabecalho() {
+        localStorage.setItem('wm_num', document.getElementById('num-caixinha').value);
+        localStorage.setItem('wm_gestor', document.getElementById('nome-gestor').value);
+        localStorage.setItem('wm_anterior', document.getElementById('saldo-anterior').value);
+        calcularSaldo();
+    }
+
+    function calcularSaldo() {
+        let anterior = parseFloat(document.getElementById('saldo-anterior').value) || 0;
+        let totalCreditos = bancoDespesas.filter(i => i.categoria === 'CRÉDITO WM CONSTRUÇÕES E MONTAGEM').reduce((s, i) => s + i.valor, 0);
+        let totalGasto = bancoDespesas.filter(i => i.categoria !== 'CRÉDITO WM CONSTRUÇÕES E MONTAGEM').reduce((s, i) => s + i.valor, 0);
+        let saldoFinal = anterior + totalCreditos - totalGasto;
+        
+        document.getElementById('total-creditos').innerText = totalCreditos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('total-gasto').innerText = totalGasto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        let display = document.getElementById('saldo-atual-display');
+        display.innerText = "SALDO ATUAL: " + saldoFinal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        display.className = saldoFinal >= 0 ? "saldo-atual positivo" : "saldo-atual negativo";
+    }
+
+    function lerArquivoBase64(file) {
+        return new Promise((resolve) => {
+            if (!file) { resolve(null); return; }
+            let reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function salvarDespesa() {
+        let desc = document.getElementById('desc').value;
+        let valor = parseFloat(document.getElementById('valor').value);
+        let categoria = document.getElementById('categoria').value;
+        let dataInput = document.getElementById('data').value;
+        let tipoDoc = document.getElementById('tipo-doc').value;
+        let formaPagto = document.getElementById('forma-pagto').value;
+        let fileDoc = document.getElementById('foto-doc').files[0];
+        let filePagto = document.getElementById('foto-pagto').files[0];
+
+        if(!desc || !valor) { alert("Preencha descrição e valor!"); return; }
+
+        let novaDespesa = {
+            data: dataInput.split('-').reverse().join('/'),
+            categoria: categoria,
+            descricao: desc,
+            valor: valor,
+            doc_tipo: tipoDoc,
+            pagto_tipo: formaPagto,
+            fotoDocBase64: await lerArquivoBase64(fileDoc),
+            fotoPagtoBase64: await lerArquivoBase64(filePagto)
+        };
+
+        bancoDespesas.push(novaDespesa);
+        localStorage.setItem('wm_despesas', JSON.stringify(bancoDespesas));
+        
+        document.getElementById('desc').value = ""; document.getElementById('valor').value = ""; 
+        document.getElementById('foto-doc').value = ""; document.getElementById('foto-pagto').value = "";
+        calcularSaldo();
+        alert("✔️ Salvo com sucesso na lista!");
+    }
+
+    function abrirPlanilha() {
+        document.getElementById('tela-principal').style.display = 'none';
+        
+        // Atualiza os dados do cabeçalho oficial para o PDF
+        document.getElementById('print-num').innerText = document.getElementById('num-caixinha').value || "Não informado";
+        document.getElementById('print-gestor').innerText = document.getElementById('nome-gestor').value || "Não informado";
+        
+        document.getElementById('tela-planilha').style.display = 'block';
+        gerarTabela();
+    }
+
+    function voltarPrincipal() {
+        document.getElementById('tela-planilha').style.display = 'none';
+        document.getElementById('tela-principal').style.display = 'block';
+    }
+
+    function gerarTabela() {
+        let corpo = document.getElementById('corpo-tabela');
+        corpo.innerHTML = ""; 
+
+        bancoDespesas.forEach((item, index) => {
+            let tr = document.createElement('tr');
+            
+            let imgDoc = item.fotoDocBase64 ? `<img src="${item.fotoDocBase64}" class="foto-miniatura" onclick="abrirFotoGrande('${item.fotoDocBase64}')">` : '';
+            let textoDoc = (item.doc_tipo.includes('SEM') && !item.categoria.includes('CRÉDITO')) ? '<span class="txt-falta">SEM DOCUMENTO (FALTANDO)</span>' : item.doc_tipo;
+
+            let imgPagto = item.fotoPagtoBase64 ? `<img src="${item.fotoPagtoBase64}" class="foto-miniatura" onclick="abrirFotoGrande('${item.fotoPagtoBase64}')">` : '';
+            let textoPagto = (item.pagto_tipo.includes('SEM') && !item.categoria.includes('CRÉDITO')) ? '<span class="txt-falta">SEM DOCUMENTO (FALTANDO)</span>' : item.pagto_tipo;
+
+            tr.innerHTML = `
+                <td>${item.data}</td>
+                <td style="font-weight: bold; color: ${item.categoria.includes('CRÉDITO') ? 'green' : '#333'}">${item.categoria}</td>
+                <td>${item.descricao}</td>
+                <td>R$ ${item.valor.toFixed(2)}</td>
+                <td>${textoDoc} <br> ${imgDoc}</td>
+                <td>${textoPagto} <br> ${imgPagto}</td>
+                <td style="text-align: center;">
+                    <button onclick="editarItem(${index})" style="background: #f39c12; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px;">✏️</button>
+                    <button onclick="excluirItem(${index})" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">🗑️</button>
+                </td>
+            `;
+            corpo.appendChild(tr);
+        });
+    }
+
+    function editarItem(index) {
+        let item = bancoDespesas[index];
+        
+        let partesData = item.data.split('/');
+        document.getElementById('data').value = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;
+        
+        document.getElementById('categoria').value = item.categoria;
+        document.getElementById('desc').value = item.descricao;
+        document.getElementById('valor').value = item.valor;
+        document.getElementById('tipo-doc').value = item.doc_tipo;
+        document.getElementById('forma-pagto').value = item.pagto_tipo;
+        
+        alert("✏️ Os textos foram carregados para edição.\n\n⚠️ Atenção: Se precisar de fotos, você deve anexá-las novamente. Ao salvar, ele substituirá o lançamento antigo.");
+        
+        bancoDespesas.splice(index, 1);
+        localStorage.setItem('wm_despesas', JSON.stringify(bancoDespesas));
+        calcularSaldo();
+        voltarPrincipal();
+    }
+
+    function excluirItem(index) {
+        if (confirm("Tem certeza que deseja excluir este lançamento?")) {
+            bancoDespesas.splice(index, 1);
+            localStorage.setItem('wm_despesas', JSON.stringify(bancoDespesas));
+            gerarTabela();
+            calcularSaldo();
+        }
+    }
+
+    function abrirFotoGrande(base64) {
+        document.getElementById('foto-ampliada').src = base64;
+        document.getElementById('modal-foto').style.display = 'flex';
+    }
+    function fecharModal() {
+        document.getElementById('modal-foto').style.display = 'none';
+    }
+
+    function pausarApp() {
+        alert("✅ Pode fechar o aplicativo tranquilo!\n\nSeus lançamentos, saldo e fotos já estão salvos na memória interna.");
+    }
+
+    function compartilharApp() {
+        let num = document.getElementById('num-caixinha').value || "S/N";
+        let gestor = document.getElementById('nome-gestor').value || "Não informado";
+        let saldoFinal = document.getElementById('saldo-atual-display').innerText;
+        let totalGasto = document.getElementById('total-gasto').innerText;
+        
+        let textoResumo = `*Fechamento de Caixinha WM*\nNº Requisição: ${num}\nGestor: ${gestor}\nAuditor: Anderson\n\nTotal Gasto: ${totalGasto}\n${saldoFinal}`;
+
+        if (navigator.share) {
+            navigator.share({ title: 'Caixinha WM', text: textoResumo }).catch(console.error);
+        } else {
+            let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoResumo)}`;
+            window.open(url, '_blank');
+        }
+    }
+
+    function gerarPDF() {
+        let num = document.getElementById('num-caixinha').value;
+        if(!num) { alert("⚠️ Preencha o Nº da Requisição!"); return; }
+        
+        abrirPlanilha();
+        
+        setTimeout(() => {
+            window.print();
+            setTimeout(() => {
+                if(confirm("PDF Gerado! Deseja zerar o aplicativo para um novo caixinha?")) {
+                    localStorage.removeItem('wm_despesas');
+                    localStorage.removeItem('wm_anterior');
+                    localStorage.removeItem('wm_num');
+                    localStorage.removeItem('wm_gestor');
+                    location.reload();
+                }
+            }, 1000);
+        }, 1000);
+    }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Offline ok'))
+                .catch(err => console.log('Erro sw', err));
+        });
+    }
+
+    calcularSaldo();
+</script>
+</body>
+</html>
