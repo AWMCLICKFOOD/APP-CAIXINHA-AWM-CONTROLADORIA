@@ -63,8 +63,18 @@
             .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha { display: none !important; }
             body { background-color: white; padding: 0; }
             .app-container { border: none; box-shadow: none; max-width: 100%; }
-            th:last-child, td:last-child { display: none; } /* Esconde a lixeira e o lápis no PDF */
-            .cabecalho-oficial { display: block; } /* Mostra o cabeçalho no PDF */
+            th:last-child, td:last-child { display: none; } 
+            .cabecalho-oficial { display: block; } 
+            
+            .foto-miniatura {
+                width: 150px !important;
+                height: auto !important;
+                max-height: 150px;
+                object-fit: contain;
+                display: block;
+                margin: 5px auto;
+            }
+            td { text-align: center; } 
         }
     </style>
 </head>
@@ -291,11 +301,8 @@
 
     function abrirPlanilha() {
         document.getElementById('tela-principal').style.display = 'none';
-        
-        // Atualiza os dados do cabeçalho oficial para o PDF
         document.getElementById('print-num').innerText = document.getElementById('num-caixinha').value || "Não informado";
         document.getElementById('print-gestor').innerText = document.getElementById('nome-gestor').value || "Não informado";
-        
         document.getElementById('tela-planilha').style.display = 'block';
         gerarTabela();
     }
@@ -311,10 +318,8 @@
 
         bancoDespesas.forEach((item, index) => {
             let tr = document.createElement('tr');
-            
             let imgDoc = item.fotoDocBase64 ? `<img src="${item.fotoDocBase64}" class="foto-miniatura" onclick="abrirFotoGrande('${item.fotoDocBase64}')">` : '';
             let textoDoc = (item.doc_tipo.includes('SEM') && !item.categoria.includes('CRÉDITO')) ? '<span class="txt-falta">SEM DOCUMENTO (FALTANDO)</span>' : item.doc_tipo;
-
             let imgPagto = item.fotoPagtoBase64 ? `<img src="${item.fotoPagtoBase64}" class="foto-miniatura" onclick="abrirFotoGrande('${item.fotoPagtoBase64}')">` : '';
             let textoPagto = (item.pagto_tipo.includes('SEM') && !item.categoria.includes('CRÉDITO')) ? '<span class="txt-falta">SEM DOCUMENTO (FALTANDO)</span>' : item.pagto_tipo;
 
@@ -336,18 +341,14 @@
 
     function editarItem(index) {
         let item = bancoDespesas[index];
-        
         let partesData = item.data.split('/');
         document.getElementById('data').value = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;
-        
         document.getElementById('categoria').value = item.categoria;
         document.getElementById('desc').value = item.descricao;
         document.getElementById('valor').value = item.valor;
         document.getElementById('tipo-doc').value = item.doc_tipo;
         document.getElementById('forma-pagto').value = item.pagto_tipo;
-        
-        alert("✏️ Os textos foram carregados para edição.\n\n⚠️ Atenção: Se precisar de fotos, você deve anexá-las novamente. Ao salvar, ele substituirá o lançamento antigo.");
-        
+        alert("✏️ Os textos foram carregados para edição.\n\n⚠️ Atenção: Reanexe as fotos se desejar trocá-las.");
         bancoDespesas.splice(index, 1);
         localStorage.setItem('wm_despesas', JSON.stringify(bancoDespesas));
         calcularSaldo();
@@ -372,7 +373,7 @@
     }
 
     function pausarApp() {
-        alert("✅ Pode fechar o aplicativo tranquilo!\n\nSeus lançamentos, saldo e fotos já estão salvos na memória interna.");
+        alert("✅ Lançamentos salvos localmente!");
     }
 
     function compartilharApp() {
@@ -380,9 +381,7 @@
         let gestor = document.getElementById('nome-gestor').value || "Não informado";
         let saldoFinal = document.getElementById('saldo-atual-display').innerText;
         let totalGasto = document.getElementById('total-gasto').innerText;
-        
         let textoResumo = `*Fechamento de Caixinha WM*\nNº Requisição: ${num}\nGestor: ${gestor}\nAuditor: Anderson\n\nTotal Gasto: ${totalGasto}\n${saldoFinal}`;
-
         if (navigator.share) {
             navigator.share({ title: 'Caixinha WM', text: textoResumo }).catch(console.error);
         } else {
@@ -394,33 +393,24 @@
     function gerarPDF() {
         let num = document.getElementById('num-caixinha').value;
         if(!num) { alert("⚠️ Preencha o Nº da Requisição!"); return; }
-        
         abrirPlanilha();
-        
         setTimeout(() => {
             window.print();
             setTimeout(() => {
-                if(confirm("PDF Gerado! Deseja zerar o aplicativo para um novo caixinha?")) {
-                    localStorage.removeItem('wm_despesas');
-                    localStorage.removeItem('wm_anterior');
-                    localStorage.removeItem('wm_num');
-                    localStorage.removeItem('wm_gestor');
+                if(confirm("PDF Gerado! Deseja zerar o aplicativo?")) {
+                    localStorage.clear();
                     location.reload();
                 }
             }, 1000);
-        }, 1000);
+        }, 200); 
     }
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Offline ok'))
-                .catch(err => console.log('Erro sw', err));
+            navigator.serviceWorker.register('./sw.js');
         });
     }
-
     calcularSaldo();
 </script>
 </body>
 </html>
-
