@@ -42,7 +42,8 @@
         .area-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
         .btn-pausar { background-color: #17a2b8; color: white; border: none; padding: 12px; font-size: 14px; border-radius: 5px; cursor: pointer; flex: 1 1 100%; font-weight: bold; }
         .btn-whats { background-color: #25D366; color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; cursor: pointer; flex: 1; font-weight: bold; }
-        .btn-fechar { background-color: #333; color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; cursor: pointer; flex: 1; font-weight: bold; }
+        .btn-gerar-pdf { background-color: #333; color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; cursor: pointer; flex: 1; font-weight: bold; }
+        .btn-encerrar { background-color: var(--vermelho-neg); color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; cursor: pointer; flex: 1 1 100%; font-weight: bold; margin-top: 5px; }
 
         #tela-planilha { display: none; padding: 10px; background: white; min-height: 90vh; }
         .tabela-container { overflow-x: auto; margin-top: 15px; }
@@ -189,7 +190,8 @@
         <div class="area-acoes">
             <button class="btn-pausar" onclick="pausarApp()">💾 Salvar e Pausar Caixinha</button>
             <button class="btn-whats" onclick="compartilharApp()">📲 Enviar Whats/Teams</button>
-            <button class="btn-fechar" onclick="gerarPDF()">📄 Finalizar e PDF</button>
+            <button class="btn-gerar-pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
+            <button class="btn-encerrar" onclick="encerrarCaixinha()">🏁 Encerrar o Caixinha</button>
         </div>
     </div>
 
@@ -396,13 +398,18 @@
         abrirPlanilha();
         setTimeout(() => {
             window.print();
-            setTimeout(() => {
-                if(confirm("PDF Gerado! Deseja zerar o aplicativo?")) {
-                    localStorage.clear();
-                    location.reload();
-                }
-            }, 1000);
         }, 200); 
+    }
+
+    function encerrarCaixinha() {
+        if(confirm("⚠️ ATENÇÃO: Deseja realmente ENCERRAR este caixinha? Isso vai apagar todos os lançamentos da lista para começar um novo.")) {
+            localStorage.removeItem('wm_despesas');
+            localStorage.removeItem('wm_anterior');
+            localStorage.removeItem('wm_num');
+            localStorage.removeItem('wm_gestor');
+            alert("🏁 Caixinha encerrado com sucesso!");
+            location.reload();
+        }
     }
 
     if ('serviceWorker' in navigator) {
