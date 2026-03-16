@@ -15,7 +15,7 @@
             --fundo: #f4f7f6;
         }
         body { font-family: Arial, sans-serif; background-color: #ccc; margin: 0; display: flex; justify-content: center; padding: 10px; }
-        .app-container { width: 100%; max-width: 650px; background-color: var(--fundo); min-height: 95vh; border: 8px solid; border-image: linear-gradient(to right, var(--azul-wm) 50%, var(--laranja-wm) 50%) 1; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box; position: relative; }
+        .app-container { width: 100%; max-width: 700px; background-color: var(--fundo); min-height: 95vh; border: 8px solid; border-image: linear-gradient(to right, var(--azul-wm) 50%, var(--laranja-wm) 50%) 1; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box; position: relative; }
         
         header { background-color: white; color: var(--azul-wm); padding: 15px 10px; text-align: center; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 10px; border-bottom: 2px solid #ddd; }
         
@@ -131,9 +131,26 @@
             <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
                 <label>Tipo de Documento Fiscal:</label>
                 <select id="tipo-doc">
-                    <option value="Sem Doc Fiscal">🚨 SEM DOCUMENTO FISCAL</option>
-                    <option value="NF-e">NF-e / Cupom Fiscal</option>
-                    <option value="Recibo">Recibo / Comanda</option>
+                    <option value="Sem Doc Fiscal">🚨 SEM DOCUMENTO FISCAL (FALTANDO)</option>
+                    <option value="NF-e">NF-e - Nota Fiscal Eletrônica</option>
+                    <option value="NFC-e">NFC-e - Nota de Consumidor Eletrônica</option>
+                    <option value="NFS-e">NFS-e - Nota Fiscal de Serviço Eletrônica</option>
+                    <option value="CT-e">CT-e - Conhecimento de Transporte</option>
+                    <option value="MDF-e">MDF-e - Manifesto de Documentos Fiscais</option>
+                    <option value="BP-e">BP-e - Bilhete de Passagem Eletrônico</option>
+                    <option value="CF-e / SAT">CF-e / SAT - Cupom Fiscal Eletrônico</option>
+                    <option value="NFA-e">NFA-e - Nota Fiscal Avulsa Eletrônica</option>
+                    <option value="Cupom Fiscal (ECF)">Cupom Fiscal (Máquina ECF)</option>
+                    <option value="Nota Produtor Rural">Nota Fiscal de Produtor Rural</option>
+                    <option value="Conta Energia">Conta de Energia Elétrica</option>
+                    <option value="Conta Água/Esgoto">Conta de Água/Esgoto</option>
+                    <option value="Conta Telecom">Conta de Telecomunicação/Internet</option>
+                    <option value="Conta Gás">Conta de Fornecimento de Gás</option>
+                    <option value="RPA">RPA - Recibo de Pagamento a Autônomo</option>
+                    <option value="Recibo">Recibo</option>
+                    <option value="Comanda">Comanda</option>
+                    <option value="Orçamento">Orçamento</option>
+                    <option value="Outros">Outros Documentos Fiscais</option>
                 </select>
                 <label>📸 Foto da Nota Fiscal:</label>
                 <input type="file" id="foto-doc" accept="image/*" capture="environment">
@@ -310,7 +327,7 @@
         document.getElementById('tela-planilha').style.display = 'none';
         document.getElementById('tela-principal').style.display = 'block';
         calcularSaldo();
-        alert("✏️ Editando... Lembre-se de reanexar as fotos se necessário!");
+        alert("✏️ Editando... Lembre-se de reanexar as fotos!");
     }
 
     function excluir(index) { if(confirm("Excluir?")) { banco.splice(index,1); localStorage.setItem('wm_despesas', JSON.stringify(banco)); abrirPlanilha(); calcularSaldo(); } }
