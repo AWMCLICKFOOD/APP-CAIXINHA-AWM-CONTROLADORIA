@@ -15,13 +15,13 @@
             --fundo: #f4f7f6;
         }
         body { font-family: Arial, sans-serif; background-color: #ccc; margin: 0; display: flex; justify-content: center; padding: 10px; }
-        .app-container { width: 100%; max-width: 600px; background-color: var(--fundo); min-height: 95vh; border: 8px solid; border-image: linear-gradient(to right, var(--azul-wm) 50%, var(--laranja-wm) 50%) 1; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box; position: relative; }
+        .app-container { width: 100%; max-width: 650px; background-color: var(--fundo); min-height: 95vh; border: 8px solid; border-image: linear-gradient(to right, var(--azul-wm) 50%, var(--laranja-wm) 50%) 1; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box; position: relative; }
         
         header { background-color: white; color: var(--azul-wm); padding: 15px 10px; text-align: center; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 10px; border-bottom: 2px solid #ddd; }
         
         .logos-container { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 15px; width: 100%; }
-        .logo-wm { width: 45%; max-width: 180px; height: auto; }
-        .logo-controladoria { width: 45%; max-width: 180px; height: auto; border-radius: 4px; }
+        .logo-wm { width: 40%; max-width: 150px; height: auto; }
+        .logo-controladoria { width: 40%; max-width: 150px; height: auto; border-radius: 4px; }
         
         .titulo-header { font-size: 15px; color: var(--laranja-wm); margin-top: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
 
@@ -39,31 +39,32 @@
         .btn-ver-planilha { background-color: var(--laranja-wm); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px;}
         
         .area-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
-        .btn-pausar { background-color: #17a2b8; color: white; border: none; padding: 12px; font-size: 14px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; }
-        .btn-whats { background-color: #25D366; color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1; font-weight: bold; }
-        .btn-gerar-pdf { background-color: #333; color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1; font-weight: bold; }
-        .btn-encerrar { background-color: var(--vermelho-neg); color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; }
+        .btn-pausar { background-color: #17a2b8; color: white; border: none; padding: 12px; font-size: 14px; border-radius: 5px; flex: 1; font-weight: bold; }
+        .btn-whats { background-color: #25D366; color: white; border: none; padding: 15px; font-size: 14px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; cursor: pointer; }
+        .btn-encerrar { background-color: var(--vermelho-neg); color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; margin-top: 5px; }
 
         #tela-planilha { display: none; padding: 10px; background: white; min-height: 90vh; }
         .tabela-container { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; font-size: 11px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle; }
         th { background-color: var(--azul-wm); color: white; }
-        .foto-miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        .foto-miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; cursor: pointer; }
 
-        /* ESTILO PARA IMPRESSÃO PDF */
         @media print {
-            @page { size: landscape; margin: 1cm; }
+            @page { size: landscape; margin: 0.5cm; }
             .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha, th:last-child, td:last-child { display: none !important; }
             body { background-color: white; padding: 0; }
             .app-container { border: none; box-shadow: none; max-width: 100%; width: 100%; }
-            .cabecalho-oficial { display: block !important; border: 1px solid #000; padding: 15px; margin-bottom: 20px; }
-            .foto-miniatura { width: 120px !important; height: auto !important; }
-            table { font-size: 10px; width: 100%; }
+            .cabecalho-oficial { display: block !important; border: 1px solid #000; padding: 10px; margin-bottom: 10px; }
+            .foto-miniatura { width: 100px !important; height: auto !important; }
+            table { font-size: 9px; width: 100%; }
         }
 
-        .cabecalho-oficial { display: none; font-size: 14px; line-height: 1.6; }
-        .cabecalho-oficial .info-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; border-top: 1px solid #ccc; padding-top: 10px; }
+        .cabecalho-oficial { display: none; font-size: 13px; line-height: 1.4; }
+        .cabecalho-oficial .info-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; border-top: 1px solid #ccc; padding-top: 8px; }
+
+        #modal-foto { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
+        #foto-ampliada { max-width: 90%; max-height: 80%; border: 3px solid white; }
     </style>
 </head>
 <body>
@@ -72,7 +73,7 @@
     <div id="tela-principal">
         <header>
             <div class="logos-container">
-                <img src="LOGOTIPO.jpg" alt="WM Construções" class="logo-wm">
+                <img src="LOGOTIPO.jpg" alt="WM" class="logo-wm">
                 <img src="Captura de tela 2026-02-13 132630.jpg" alt="Anderson" class="logo-controladoria">
             </div>
             <div class="titulo-header">✨ GESTÃO INTELIGENTE DE CAIXINHA ✨</div>
@@ -118,18 +119,36 @@
                 <option value="Combustível">Combustível</option>
                 <option value="Outras Despesas">Outras Despesas</option>
             </select>
-
             <label>Data:</label>
             <input type="date" id="data">
-
             <label>Fornecedor:</label>
             <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, Restaurante...">
-
             <label>Descrição do Gasto/Crédito:</label>
             <input type="text" id="desc" placeholder="Ex: Gasto com almoço, Crédito WM, etc...">
-
             <label>Valor (R$):</label>
             <input type="number" id="valor" step="0.01" placeholder="0.00">
+
+            <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
+                <label>Tipo de Documento Fiscal:</label>
+                <select id="tipo-doc">
+                    <option value="Sem Doc Fiscal">🚨 SEM DOCUMENTO FISCAL</option>
+                    <option value="NF-e">NF-e / Cupom Fiscal</option>
+                    <option value="Recibo">Recibo / Comanda</option>
+                </select>
+                <label>📸 Foto da Nota Fiscal:</label>
+                <input type="file" id="foto-doc" accept="image/*" capture="environment">
+            </div>
+
+            <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
+                <label>Forma de Pagamento:</label>
+                <select id="forma-pagto">
+                    <option value="PIX">PIX</option>
+                    <option value="Cartão Débito">Cartão de Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                </select>
+                <label>📸 Foto do Pagamento:</label>
+                <input type="file" id="foto-pagto" accept="image/*" capture="environment">
+            </div>
 
             <button class="btn-salvar" onclick="salvarDespesa()">➕ Salvar na Lista</button>
             <button class="btn-ver-planilha" onclick="abrirPlanilha()">📊 Ver Planilha</button>
@@ -137,25 +156,22 @@
 
         <div class="area-acoes">
             <button class="btn-pausar" onclick="alert('✅ Salvo localmente!')">💾 Salvar e Pausar</button>
-            <button class="btn-whats" onclick="compartilharApp()">📲 Enviar Resumo</button>
-            <button class="btn-gerar-pdf" onclick="gerarPDF()">📄 Gerar PDF (Landscape)</button>
+            <button class="btn-whats" onclick="gerarPDF()">📲 ENVIAR PDF (WHATS/TEAMS)</button>
             <button class="btn-encerrar" onclick="encerrarCaixinha()">🏁 Encerrar o Caixinha</button>
         </div>
     </div>
 
     <div id="tela-planilha">
-        <button class="btn-voltar" onclick="location.reload()" style="width: 100%; padding: 10px; margin-bottom: 10px; cursor: pointer;">⬅ Voltar</button>
-        
+        <button class="btn-voltar" onclick="location.reload()" style="width: 100%; padding: 10px; margin-bottom: 10px;">⬅ Voltar</button>
         <div class="cabecalho-oficial" id="cabecalho-pdf">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
-                <img src="LOGOTIPO.jpg" style="height: 60px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 5px;">
+                <img src="LOGOTIPO.jpg" style="height: 50px;">
                 <div style="text-align: center;">
-                    <h2 style="margin:0;">RELATÓRIO DE CAIXINHA</h2>
-                    <span id="print-data-emissao"></span>
+                    <h3 style="margin:0;">RELATÓRIO DE CAIXINHA</h3>
+                    <small id="print-data-emissao"></small>
                 </div>
-                <img src="Captura de tela 2026-02-13 132630.jpg" style="height: 60px;">
+                <img src="Captura de tela 2026-02-13 132630.jpg" style="height: 50px;">
             </div>
-            
             <div class="info-box">
                 <div>
                     <strong>EMPRESA:</strong> WM CONSTRUÇÕES E MONTAGENS<br>
@@ -164,14 +180,13 @@
                     <strong>Nº DO CAIXINHA:</strong> <span id="print-num"></span>
                 </div>
                 <div style="background: #f9f9f9; padding: 5px; border: 1px solid #ddd;">
-                    <strong>Saldo Anterior:</strong> <span id="print-anterior"></span><br>
-                    <strong>Total Créditos:</strong> <span id="print-creditos" style="color:green"></span><br>
-                    <strong>Total Débitos:</strong> <span id="print-debitos" style="color:red"></span><br>
+                    <strong>Saldo Anterior:</strong> <span id="print-anterior"></span> | 
+                    <strong>Créditos:</strong> <span id="print-creditos" style="color:green"></span><br>
+                    <strong>Débitos:</strong> <span id="print-debitos" style="color:red"></span> | 
                     <strong>SALDO ATUAL:</strong> <span id="print-final" style="font-weight:bold"></span>
                 </div>
             </div>
         </div>
-
         <div class="tabela-container">
             <table id="tabela-dados">
                 <thead>
@@ -189,16 +204,16 @@
             </table>
         </div>
     </div>
+
+    <div id="modal-foto">
+        <img id="foto-ampliada" src="">
+        <button onclick="document.getElementById('modal-foto').style.display='none'" style="margin-top:10px; padding:10px; cursor:pointer;">Fechar</button>
+    </div>
 </div>
 
 <script>
     document.getElementById('data').valueAsDate = new Date();
     let banco = JSON.parse(localStorage.getItem('wm_despesas')) || [];
-
-    // Carregar cabeçalho
-    document.getElementById('num-caixinha').value = localStorage.getItem('wm_num') || '';
-    document.getElementById('nome-gestor').value = localStorage.getItem('wm_gestor') || '';
-    document.getElementById('saldo-anterior').value = localStorage.getItem('wm_anterior') || '';
 
     function salvarCabecalho() {
         localStorage.setItem('wm_num', document.getElementById('num-caixinha').value);
@@ -212,7 +227,6 @@
         let cred = banco.filter(i => i.categoria.includes('CRÉDITO')).reduce((s, i) => s + i.valor, 0);
         let deb = banco.filter(i => !i.categoria.includes('CRÉDITO')).reduce((s, i) => s + i.valor, 0);
         let total = ant + cred - deb;
-        
         document.getElementById('total-creditos').innerText = cred.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('total-gasto').innerText = deb.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         let display = document.getElementById('saldo-atual-display');
@@ -220,33 +234,37 @@
         display.className = total >= 0 ? "saldo-atual positivo" : "saldo-atual negativo";
     }
 
+    function lerArquivo(file) {
+        return new Promise((res) => {
+            if(!file) res(null);
+            let r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(file);
+        });
+    }
+
     async function salvarDespesa() {
         let valor = parseFloat(document.getElementById('valor').value);
         if(!valor || !document.getElementById('desc').value) return alert("Preencha Valor e Descrição!");
-
+        
         let item = {
             categoria: document.getElementById('categoria').value,
             data: document.getElementById('data').value.split('-').reverse().join('/'),
             fornecedor: document.getElementById('fornecedor').value || '---',
             descricao: document.getElementById('desc').value,
             valor: valor,
-            foto: null // Simplificado para este exemplo
+            tipoDoc: document.getElementById('tipo-doc').value,
+            formaPagto: document.getElementById('forma-pagto').value,
+            fotoDoc: await lerArquivo(document.getElementById('foto-doc').files[0]),
+            fotoPagto: await lerArquivo(document.getElementById('foto-pagto').files[0])
         };
-
+        
         banco.push(item);
         localStorage.setItem('wm_despesas', JSON.stringify(banco));
-        document.getElementById('desc').value = '';
-        document.getElementById('valor').value = '';
-        document.getElementById('fornecedor').value = '';
-        calcularSaldo();
-        alert("Salvo!");
+        location.reload(); 
     }
 
     function abrirPlanilha() {
         document.getElementById('tela-principal').style.display = 'none';
         document.getElementById('tela-planilha').style.display = 'block';
-        
-        // Popular cabeçalho PDF
         document.getElementById('print-num').innerText = document.getElementById('num-caixinha').value;
         document.getElementById('print-gestor').innerText = document.getElementById('nome-gestor').value;
         document.getElementById('print-anterior').innerText = "R$ " + (parseFloat(document.getElementById('saldo-anterior').value) || 0).toFixed(2);
@@ -255,62 +273,57 @@
         document.getElementById('print-final').innerText = document.getElementById('saldo-atual-display').innerText.replace("SALDO ATUAL: ","");
         document.getElementById('print-data-emissao').innerText = "Emitido em: " + new Date().toLocaleDateString();
 
-        let corpo = document.getElementById('corpo-tabela');
-        corpo.innerHTML = "";
+        let corpo = document.getElementById('corpo-tabela'); corpo.innerHTML = "";
         banco.forEach((item, index) => {
+            let fotos = "";
+            if(item.fotoDoc) fotos += `<img src="${item.fotoDoc}" class="foto-miniatura" onclick="verFoto('${item.fotoDoc}')"> `;
+            if(item.fotoPagto) fotos += `<img src="${item.fotoPagto}" class="foto-miniatura" onclick="verFoto('${item.fotoPagto}')">`;
+            
             corpo.innerHTML += `<tr>
                 <td>${item.categoria}</td>
                 <td>${item.data}</td>
                 <td>${item.fornecedor}</td>
                 <td>${item.descricao}</td>
                 <td>R$ ${item.valor.toFixed(2)}</td>
-                <td>---</td>
-                <td><button onclick="excluir(${index})">🗑️</button></td>
+                <td>${fotos || '---'}</td>
+                <td>
+                    <button onclick="editar(${index})" style="background:orange; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer;">✏️</button>
+                    <button onclick="excluir(${index})" style="background:red; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer;">🗑️</button>
+                </td>
             </tr>`;
         });
     }
 
-    function excluir(index) {
-        if(confirm("Excluir?")) {
-            banco.splice(index,1);
-            localStorage.setItem('wm_despesas', JSON.stringify(banco));
-            abrirPlanilha();
-            calcularSaldo();
-        }
+    function verFoto(src) { document.getElementById('foto-ampliada').src = src; document.getElementById('modal-foto').style.display = 'flex'; }
+
+    function editar(index) {
+        let it = banco[index];
+        document.getElementById('categoria').value = it.categoria;
+        document.getElementById('data').value = it.data.split('/').reverse().join('-');
+        document.getElementById('fornecedor').value = it.fornecedor;
+        document.getElementById('desc').value = it.descricao;
+        document.getElementById('valor').value = it.valor;
+        document.getElementById('tipo-doc').value = it.tipoDoc;
+        document.getElementById('forma-pagto').value = it.formaPagto;
+        banco.splice(index, 1);
+        localStorage.setItem('wm_despesas', JSON.stringify(banco));
+        document.getElementById('tela-planilha').style.display = 'none';
+        document.getElementById('tela-principal').style.display = 'block';
+        calcularSaldo();
+        alert("✏️ Editando... Lembre-se de reanexar as fotos se necessário!");
     }
 
-    function gerarPDF() {
-        abrirPlanilha();
-        setTimeout(() => { window.print(); }, 500);
-    }
+    function excluir(index) { if(confirm("Excluir?")) { banco.splice(index,1); localStorage.setItem('wm_despesas', JSON.stringify(banco)); abrirPlanilha(); calcularSaldo(); } }
 
-    function encerrarCaixinha() {
-        if(confirm("Isso apagará tudo para um novo caixinha. Confirma?")) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
+    function gerarPDF() { abrirPlanilha(); setTimeout(() => { window.print(); }, 400); }
 
-    function compartilharApp() {
-        let resumo = `*Resumo Caixinha WM*\nNº: ${document.getElementById('num-caixinha').value}\nGestor: ${document.getElementById('nome-gestor').value}\n${document.getElementById('saldo-atual-display').innerText}`;
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(resumo)}`, '_blank');
-    }
+    function encerrarCaixinha() { if(confirm("Deseja realmente ENCERRAR e apagar tudo?")) { localStorage.clear(); location.reload(); } }
 
-    // SERVICE WORKER PARA ATUALIZAÇÃO AUTOMÁTICA
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').then(reg => {
-            reg.onupdatefound = () => {
-                const installingWorker = reg.installing;
-                installingWorker.onstatechange = () => {
-                    if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        if(confirm("Nova versão disponível! Atualizar agora?")) location.reload();
-                    }
-                };
-            };
-        });
-    }
+    // Carregar dados salvos ao iniciar
+    document.getElementById('num-caixinha').value = localStorage.getItem('wm_num') || '';
+    document.getElementById('nome-gestor').value = localStorage.getItem('wm_gestor') || '';
+    document.getElementById('saldo-anterior').value = localStorage.getItem('wm_anterior') || '';
     calcularSaldo();
 </script>
 </body>
 </html>
-
