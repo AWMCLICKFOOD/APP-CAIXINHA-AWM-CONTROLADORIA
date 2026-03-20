@@ -49,7 +49,7 @@
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle; }
         th { background-color: var(--azul-wm); color: white; }
         .foto-miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; cursor: pointer; display: block; margin-top: 3px; }
-        .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; max-width: 130px; }
+        .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; max-width: 120px; }
         .legenda-foto { font-size: 10px; font-weight: bold; color: var(--azul-wm); word-wrap: break-word; text-align: center; }
 
         /* REGRAS BLINDADAS E COMPACTAS PARA O PDF */
@@ -379,7 +379,8 @@
 
         let corpo = document.getElementById('corpo-tabela'); corpo.innerHTML = "";
         banco.forEach((item, index) => {
-            let fotosHTML = `<div style="display:flex; flex-direction:column; gap:2px; align-items:center;">`;
+            // AQUI ESTÁ A ALTERAÇÃO: flex-direction:row (lado a lado) em vez de column
+            let fotosHTML = `<div style="display:flex; flex-direction:row; gap:10px; justify-content:center; align-items:flex-start;">`;
             if(item.fotoDoc) {
                 fotosHTML += `<div class="anexo-box"><span class="legenda-foto">${item.tipoDoc}</span><img src="${item.fotoDoc}" class="foto-miniatura" onclick="verFoto('${item.fotoDoc}')"></div>`;
             }
@@ -393,7 +394,7 @@
                 <td>${item.data}</td>
                 <td>${item.fornecedor}</td>
                 <td>${item.descricao}</td>
-                <td>R$ ${item.valor.toFixed(2)}</td>
+                <td style="white-space:nowrap;">R$ ${item.valor.toFixed(2)}</td>
                 <td>${fotosHTML || '---'}</td>
                 <td style="text-align:center;">
                     <button onclick="editar(${index})" style="background:orange; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer; margin-bottom:5px;">✏️</button>
