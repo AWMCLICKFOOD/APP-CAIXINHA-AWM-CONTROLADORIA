@@ -44,7 +44,7 @@
         .btn-encerrar { background-color: var(--vermelho-neg); color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; margin-top: 5px; }
 
         #tela-planilha { display: none; padding: 10px; background: white; min-height: 90vh; }
-        .tabela-container { overflow-x: auto; margin-top: 15px; }
+        .tabela-container { overflow-x: auto; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 11px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle; }
         th { background-color: var(--azul-wm); color: white; }
@@ -52,20 +52,31 @@
         .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; max-width: 130px; }
         .legenda-foto { font-size: 10px; font-weight: bold; color: var(--azul-wm); word-wrap: break-word; text-align: center; }
 
-        /* REGRAS BLINDADAS PARA O PDF NÃO FICAR BRANCO NO GOOGLE DRIVE */
+        /* REGRAS BLINDADAS E COMPACTAS PARA O PDF */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: landscape; margin: 0.5cm; }
-            body { display: block !important; background-color: white !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
+            body, html { display: block !important; background-color: white !important; height: auto !important; min-height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
             .app-container { border: none !important; box-shadow: none !important; max-width: 100% !important; width: 100% !important; display: block !important; height: auto !important; min-height: auto !important; overflow: visible !important; padding: 0 !important; margin: 0 !important; }
+            #tela-planilha, .tabela-container { display: block !important; overflow: visible !important; height: auto !important; }
             .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha, th:last-child, td:last-child { display: none !important; }
-            .cabecalho-oficial { display: block !important; border: 1px solid #000; padding: 10px; margin-bottom: 10px; }
-            .foto-miniatura { width: 110px !important; height: auto !important; max-height: 110px; }
-            table { font-size: 10px; width: 100%; page-break-inside: auto; }
+            
+            /* Compactando o cabeçalho */
+            .cabecalho-oficial { display: block !important; border: 1px solid #000; padding: 5px !important; margin-bottom: 5px !important; }
+            .cabecalho-oficial img { height: 40px !important; }
+            .cabecalho-oficial h3 { margin: 2px 0 !important; font-size: 14px !important; }
+            .info-box { margin-top: 5px !important; padding-top: 5px !important; }
+            
+            /* Compactando a tabela e as fotos */
+            table { font-size: 10px; width: 100%; page-break-inside: auto; margin-top: 5px !important; }
             tr { page-break-inside: avoid; page-break-after: auto; }
+            th, td { padding: 4px !important; } /* Menos espaço em branco nas células */
             thead { display: table-header-group; }
             tfoot { display: table-footer-group; }
-            .anexo-box { border: none; padding: 2px; }
+            
+            .foto-miniatura { width: 80px !important; height: auto !important; max-height: 80px !important; } /* Fotos menores para economizar papel */
+            .anexo-box { border: none; padding: 0; background: transparent; margin-bottom: 2px; }
+            .legenda-foto { font-size: 9px; }
         }
 
         .cabecalho-oficial { display: none; font-size: 13px; line-height: 1.4; }
@@ -91,7 +102,7 @@
             <div style="background: #fdf5e6; padding: 10px; border-radius: 4px;">
                 <div class="linha-saldo">
                     <label>Nº DO CAIXINHA:</label>
-                    <input type="text" id="num-caixinha" placeholder="Ex: 14" style="width: 80px; text-align: center; font-weight: bold;" onchange="salvarCabecalho()">
+                    <input type="text" id="num-caixinha" placeholder="Ex: 13" style="width: 80px; text-align: center; font-weight: bold;" onchange="salvarCabecalho()">
                 </div>
                 <div class="linha-saldo">
                     <label>GESTOR:</label>
@@ -121,7 +132,7 @@
         <div class="formulario">
             <label>Categoria:</label>
             <select id="categoria">
-                <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGEM">CRÉDITO WM CONSTRUÇÕES E MONTAGEM</option>
+                <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGENS">CRÉDITO WM CONSTRUÇÕES E MONTAGENS</option>
                 <option value="Alimentação">Alimentação</option>
                 <option value="Hospedagem">Hospedagem</option>
                 <option value="Combustível">Combustível</option>
@@ -130,7 +141,7 @@
             <label>Data:</label>
             <input type="date" id="data">
             <label>Fornecedor:</label>
-            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, Restaurante...">
+            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, WM Construções e Montagens...">
             <label>Descrição do Gasto/Crédito:</label>
             <input type="text" id="desc" placeholder="Ex: Gasto com almoço, Crédito WM, etc...">
             <label>Valor (R$):</label>
@@ -148,17 +159,18 @@
                     <option value="BP-e - Bilhete de Passagem Eletrônico">BP-e - Bilhete de Passagem Eletrônico</option>
                     <option value="CF-e / SAT - Cupom Fiscal Eletrônico">CF-e / SAT - Cupom Fiscal Eletrônico</option>
                     <option value="NFA-e - Nota Fiscal Avulsa Eletrônica">NFA-e - Nota Fiscal Avulsa Eletrônica</option>
-                    <option value="Cupom Fiscal (Máquina ECF)">Cupom Fiscal (Máquina ECF)</option>
                     <option value="Nota Fiscal de Produtor Rural">Nota Fiscal de Produtor Rural</option>
+                    <option value="Outros Documentos Fiscais">Outros Documentos Fiscais</option>
+                    <option value="RPA - Recibo de Pagamento a Autônomo">RPA - Recibo de Pagamento a Autônomo</option>
+                    <option value="Nota Promissória">Nota Promissória</option>
+                    <option value="Comprovante de Venda">Comprovante de Venda</option>
+                    <option value="Recibo">Recibo</option>
+                    <option value="Comanda">Comanda</option>
+                    <option value="Orçamento">Orçamento</option>           
                     <option value="Conta de Energia Elétrica">Conta de Energia Elétrica</option>
                     <option value="Conta de Água/Esgoto">Conta de Água/Esgoto</option>
                     <option value="Conta de Telecomunicação/Internet">Conta de Telecomunicação/Internet</option>
                     <option value="Conta de Fornecimento de Gás">Conta de Fornecimento de Gás</option>
-                    <option value="RPA - Recibo de Pagamento a Autônomo">RPA - Recibo de Pagamento a Autônomo</option>
-                    <option value="Recibo">Recibo</option>
-                    <option value="Comanda">Comanda</option>
-                    <option value="Orçamento">Orçamento</option>
-                    <option value="Outros Documentos Fiscais">Outros Documentos Fiscais</option>
                 </select>
                 <label>📸 Foto da Nota Fiscal:</label>
                 <input type="file" id="foto-doc" accept="image/*" capture="environment">
@@ -170,7 +182,14 @@
                     <option value="🚨 SEM COMPROVANTE PAGTO (FALTANDO)">🚨 SEM COMPROVANTE PAGTO (FALTANDO)</option>
                     <option value="PIX">PIX</option>
                     <option value="Cartão de Débito">Cartão de Débito</option>
+                    <option value="Cartão de Crédito">Cartão de Crédito</option>
+                    <option value="Boleto Bancário">Boleto Bancário</option>
+                    <option value="Transferência Bancária (TED/DOC)">Transferência Bancária (TED/DOC)</option>
+                    <option value="Depósito Bancário">Depósito Bancário</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Vale / Voucher">Vale / Voucher (Alimentação, Refeição, etc.)</option>
                     <option value="Dinheiro">Dinheiro</option>
+                    <option value="Outros">Outros</option>
                 </select>
                 <label>📸 Foto do Pagamento:</label>
                 <input type="file" id="foto-pagto" accept="image/*" capture="environment">
@@ -181,7 +200,7 @@
         </div>
 
         <div class="area-acoes">
-            <button class="btn-pausar" onclick="alert('✅ Salvo localmente!')">💾 Salvar e Pausar</button>
+            <button class="btn-pausar" onclick="alert('✅ Salvo localmente! Pode fechar o App.')">💾 Salvar e Pausar</button>
             <button class="btn-whats" onclick="gerarPDF()">📲 GERAR PDF PARA COMPARTILHAR</button>
             <button class="btn-encerrar" onclick="encerrarCaixinha()">🏁 Encerrar o Caixinha</button>
         </div>
@@ -261,10 +280,37 @@
         display.className = total >= 0 ? "saldo-atual positivo" : "saldo-atual negativo";
     }
 
-    function lerArquivo(file) {
-        return new Promise((res) => {
-            if(!file) res(null);
-            let r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(file);
+    function comprimirImagem(file) {
+        return new Promise((resolve) => {
+            if (!file) { resolve(null); return; }
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                let img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    let canvas = document.createElement('canvas');
+                    let ctx = canvas.getContext('2d');
+                    
+                    let MAX_WIDTH = 600;
+                    let MAX_HEIGHT = 600;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    let dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                    resolve(dataUrl);
+                }
+            }
         });
     }
 
@@ -272,6 +318,11 @@
         let valor = parseFloat(document.getElementById('valor').value);
         if(!valor || !document.getElementById('desc').value) return alert("Preencha Valor e Descrição!");
         
+        document.getElementById('btn-salvar-principal').innerText = "⏳ Processando fotos...";
+        
+        let fotoDocBase64 = await comprimirImagem(document.getElementById('foto-doc').files[0]);
+        let fotoPagtoBase64 = await comprimirImagem(document.getElementById('foto-pagto').files[0]);
+
         let item = {
             categoria: document.getElementById('categoria').value,
             data: document.getElementById('data').value.split('-').reverse().join('/'),
@@ -280,8 +331,8 @@
             valor: valor,
             tipoDoc: document.getElementById('tipo-doc').value,
             formaPagto: document.getElementById('forma-pagto').value,
-            fotoDoc: await lerArquivo(document.getElementById('foto-doc').files[0]),
-            fotoPagto: await lerArquivo(document.getElementById('foto-pagto').files[0])
+            fotoDoc: fotoDocBase64,
+            fotoPagto: fotoPagtoBase64
         };
         
         if (indiceEdicao >= 0) {
@@ -289,26 +340,30 @@
             if (!item.fotoPagto) item.fotoPagto = banco[indiceEdicao].fotoPagto;
             banco[indiceEdicao] = item;
             indiceEdicao = -1; 
-            document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
         } else {
             banco.push(item);
         }
 
-        localStorage.setItem('wm_despesas', JSON.stringify(banco));
-        
-        // Zera os campos para o próximo
-        document.getElementById('desc').value = ''; 
-        document.getElementById('valor').value = ''; 
-        document.getElementById('fornecedor').value = '';
-        document.getElementById('foto-doc').value = '';
-        document.getElementById('foto-pagto').value = '';
-        
-        // Retorna as listas para o aviso FALTANDO
-        document.getElementById('tipo-doc').selectedIndex = 0;
-        document.getElementById('forma-pagto').selectedIndex = 0;
+        try {
+            localStorage.setItem('wm_despesas', JSON.stringify(banco));
+            
+            document.getElementById('desc').value = ''; 
+            document.getElementById('valor').value = ''; 
+            document.getElementById('fornecedor').value = '';
+            document.getElementById('foto-doc').value = '';
+            document.getElementById('foto-pagto').value = '';
+            document.getElementById('tipo-doc').selectedIndex = 0;
+            document.getElementById('forma-pagto').selectedIndex = 0;
+            document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
 
-        calcularSaldo(); 
-        alert("✔️ Salvo com sucesso!");
+            calcularSaldo(); 
+            alert("✔️ Salvo com sucesso!");
+            
+        } catch (e) {
+            alert("❌ ERRO DE MEMÓRIA: O armazenamento offline está cheio! Exclua alguns lançamentos antigos.");
+            banco.pop(); 
+            document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
+        }
     }
 
     function abrirPlanilha() {
@@ -324,7 +379,7 @@
 
         let corpo = document.getElementById('corpo-tabela'); corpo.innerHTML = "";
         banco.forEach((item, index) => {
-            let fotosHTML = `<div style="display:flex; flex-direction:column; gap:5px; align-items:center;">`;
+            let fotosHTML = `<div style="display:flex; flex-direction:column; gap:2px; align-items:center;">`;
             if(item.fotoDoc) {
                 fotosHTML += `<div class="anexo-box"><span class="legenda-foto">${item.tipoDoc}</span><img src="${item.fotoDoc}" class="foto-miniatura" onclick="verFoto('${item.fotoDoc}')"></div>`;
             }
@@ -340,7 +395,7 @@
                 <td>${item.descricao}</td>
                 <td>R$ ${item.valor.toFixed(2)}</td>
                 <td>${fotosHTML || '---'}</td>
-                <td>
+                <td style="text-align:center;">
                     <button onclick="editar(${index})" style="background:orange; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer; margin-bottom:5px;">✏️</button>
                     <button onclick="excluir(${index})" style="background:red; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer;">🗑️</button>
                 </td>
@@ -382,7 +437,6 @@
 
     function gerarPDF() { 
         abrirPlanilha(); 
-        // Aumentei o tempo para 800ms para evitar PDF em branco e dar tempo do celular carregar tudo.
         setTimeout(() => { window.print(); }, 800); 
     }
 
