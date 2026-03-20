@@ -52,14 +52,19 @@
         .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; max-width: 130px; }
         .legenda-foto { font-size: 10px; font-weight: bold; color: var(--azul-wm); word-wrap: break-word; text-align: center; }
 
+        /* REGRAS BLINDADAS PARA O PDF NÃO FICAR BRANCO NO GOOGLE DRIVE */
         @media print {
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: landscape; margin: 0.5cm; }
+            body { display: block !important; background-color: white !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
+            .app-container { border: none !important; box-shadow: none !important; max-width: 100% !important; width: 100% !important; display: block !important; height: auto !important; min-height: auto !important; overflow: visible !important; padding: 0 !important; margin: 0 !important; }
             .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha, th:last-child, td:last-child { display: none !important; }
-            body { background-color: white; padding: 0; }
-            .app-container { border: none; box-shadow: none; max-width: 100%; width: 100%; }
             .cabecalho-oficial { display: block !important; border: 1px solid #000; padding: 10px; margin-bottom: 10px; }
             .foto-miniatura { width: 110px !important; height: auto !important; max-height: 110px; }
-            table { font-size: 10px; width: 100%; }
+            table { font-size: 10px; width: 100%; page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            thead { display: table-header-group; }
+            tfoot { display: table-footer-group; }
             .anexo-box { border: none; padding: 2px; }
         }
 
@@ -116,7 +121,7 @@
         <div class="formulario">
             <label>Categoria:</label>
             <select id="categoria">
-                <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGENS">CRÉDITO WM CONSTRUÇÕES E MONTAGENS</option>
+                <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGEM">CRÉDITO WM CONSTRUÇÕES E MONTAGEM</option>
                 <option value="Alimentação">Alimentação</option>
                 <option value="Hospedagem">Hospedagem</option>
                 <option value="Combustível">Combustível</option>
@@ -125,7 +130,7 @@
             <label>Data:</label>
             <input type="date" id="data">
             <label>Fornecedor:</label>
-            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, WM construções e Montagens...">
+            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, Restaurante...">
             <label>Descrição do Gasto/Crédito:</label>
             <input type="text" id="desc" placeholder="Ex: Gasto com almoço, Crédito WM, etc...">
             <label>Valor (R$):</label>
@@ -134,38 +139,26 @@
             <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
                 <label>Tipo de Documento Fiscal:</label>
                 <select id="tipo-doc">
-                    <option value="Sem Doc Fiscal">🚨 SEM DOCUMENTO FISCAL (FALTANDO)</option>
-                    <option value="NF-e">NF-e - Nota Fiscal Eletrônica</option>
-                    <option value="NFC-e">NFC-e - Nota de Consumidor Eletrônica</option>
-                    <option value="NFS-e">NFS-e - Nota Fiscal de Serviço Eletrônica</option>
-                    <option value="CT-e">CT-e - Conhecimento de Transporte</option>
-                    <option value="MDF-e">MDF-e - Manifesto de Documentos Fiscais</option>
-                    <option value="BP-e">BP-e - Bilhete de Passagem Eletrônico</option>
-                    <option value="CF-e / SAT">CF-e / SAT - Cupom Fiscal Eletrônico</option>
-                    <option value="NFA-e">NFA-e - Nota Fiscal Avulsa Eletrônica</option>
-                    <option value="Nota Produtor Rural">Nota Fiscal de Produtor Rural</option>
-                    <option value="Outros">Outros Documentos Fiscais</option>
-                    <option value="Nota Promissória">Nota Promissória</option>
- 		    <option value="Comprovante de Venda">Comprovante de Venda</option>
-                    <option value="RPA">RPA - Recibo de Pagamento a Autônomo</option>
+                    <option value="🚨 SEM DOCUMENTO FISCAL (FALTANDO)">🚨 SEM DOCUMENTO FISCAL (FALTANDO)</option>
+                    <option value="NF-e - Nota Fiscal Eletrônica">NF-e - Nota Fiscal Eletrônica</option>
+                    <option value="NFC-e - Nota de Consumidor Eletrônica">NFC-e - Nota de Consumidor Eletrônica</option>
+                    <option value="NFS-e - Nota Fiscal de Serviço Eletrônica">NFS-e - Nota Fiscal de Serviço Eletrônica</option>
+                    <option value="CT-e - Conhecimento de Transporte">CT-e - Conhecimento de Transporte</option>
+                    <option value="MDF-e - Manifesto de Documentos Fiscais">MDF-e - Manifesto de Documentos Fiscais</option>
+                    <option value="BP-e - Bilhete de Passagem Eletrônico">BP-e - Bilhete de Passagem Eletrônico</option>
+                    <option value="CF-e / SAT - Cupom Fiscal Eletrônico">CF-e / SAT - Cupom Fiscal Eletrônico</option>
+                    <option value="NFA-e - Nota Fiscal Avulsa Eletrônica">NFA-e - Nota Fiscal Avulsa Eletrônica</option>
+                    <option value="Cupom Fiscal (Máquina ECF)">Cupom Fiscal (Máquina ECF)</option>
+                    <option value="Nota Fiscal de Produtor Rural">Nota Fiscal de Produtor Rural</option>
+                    <option value="Conta de Energia Elétrica">Conta de Energia Elétrica</option>
+                    <option value="Conta de Água/Esgoto">Conta de Água/Esgoto</option>
+                    <option value="Conta de Telecomunicação/Internet">Conta de Telecomunicação/Internet</option>
+                    <option value="Conta de Fornecimento de Gás">Conta de Fornecimento de Gás</option>
+                    <option value="RPA - Recibo de Pagamento a Autônomo">RPA - Recibo de Pagamento a Autônomo</option>
                     <option value="Recibo">Recibo</option>
                     <option value="Comanda">Comanda</option>
                     <option value="Orçamento">Orçamento</option>
-                    <option value="Conta Energia">Conta de Energia Elétrica</option>
-                    <option value="Conta Água/Esgoto">Conta de Água/Esgoto</option>
-                    <option value="Conta Telecom">Conta de Telecomunicação/Internet</option>
-                    <option value="Conta Gás">Conta de Fornecimento de Gás</option>
-                                   
-                </select>
-                <label>📸 Foto da Nota Fiscal:</label>
-                <input type="file" id="foto-doc" accept="image/*" capture="environment">
-            </div>
-
-            <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
-                <label>Forma de Pagamento:</label>
-                <select id="forma-pagto">
-                    <option value="PIX">PIX</option>
-                    <option value="Cartão Débito">
+                    <option value="Outros Documentos Fiscais">Outros Documentos Fiscais</option>
                 </select>
                 <label>📸 Foto da Nota Fiscal:</label>
                 <input type="file" id="foto-doc" accept="image/*" capture="environment">
@@ -303,14 +296,14 @@
 
         localStorage.setItem('wm_despesas', JSON.stringify(banco));
         
-        // Zera todos os campos do formulário para o próximo lançamento
+        // Zera os campos para o próximo
         document.getElementById('desc').value = ''; 
         document.getElementById('valor').value = ''; 
         document.getElementById('fornecedor').value = '';
         document.getElementById('foto-doc').value = '';
         document.getElementById('foto-pagto').value = '';
         
-        // Retorna as listas suspensas para a primeira opção (Aviso de Faltando)
+        // Retorna as listas para o aviso FALTANDO
         document.getElementById('tipo-doc').selectedIndex = 0;
         document.getElementById('forma-pagto').selectedIndex = 0;
 
@@ -389,7 +382,8 @@
 
     function gerarPDF() { 
         abrirPlanilha(); 
-        setTimeout(() => { window.print(); }, 400); 
+        // Aumentei o tempo para 800ms para evitar PDF em branco e dar tempo do celular carregar tudo.
+        setTimeout(() => { window.print(); }, 800); 
     }
 
     function encerrarCaixinha() { 
