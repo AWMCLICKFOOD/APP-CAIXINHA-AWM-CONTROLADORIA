@@ -49,8 +49,8 @@
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle; }
         th { background-color: var(--azul-wm); color: white; }
         .foto-miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; cursor: pointer; display: block; margin-top: 3px; }
-        .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center;}
-        .legenda-foto { font-size: 9px; font-weight: bold; color: var(--azul-wm); }
+        .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; max-width: 130px; }
+        .legenda-foto { font-size: 10px; font-weight: bold; color: var(--azul-wm); word-wrap: break-word; text-align: center; }
 
         @media print {
             @page { size: landscape; margin: 0.5cm; }
@@ -61,7 +61,6 @@
             .foto-miniatura { width: 110px !important; height: auto !important; max-height: 110px; }
             table { font-size: 10px; width: 100%; }
             .anexo-box { border: none; padding: 2px; }
-            .legenda-foto { font-size: 10px; }
         }
 
         .cabecalho-oficial { display: none; font-size: 13px; line-height: 1.4; }
@@ -117,7 +116,7 @@
         <div class="formulario">
             <label>Categoria:</label>
             <select id="categoria">
-                <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGEM">CRÉDITO WM CONSTRUÇÕES E MONTAGEM</option>
+                <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGENS">CRÉDITO WM CONSTRUÇÕES E MONTAGENS</option>
                 <option value="Alimentação">Alimentação</option>
                 <option value="Hospedagem">Hospedagem</option>
                 <option value="Combustível">Combustível</option>
@@ -126,7 +125,7 @@
             <label>Data:</label>
             <input type="date" id="data">
             <label>Fornecedor:</label>
-            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, Restaurante...">
+            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, WM construções e Montagens...">
             <label>Descrição do Gasto/Crédito:</label>
             <input type="text" id="desc" placeholder="Ex: Gasto com almoço, Crédito WM, etc...">
             <label>Valor (R$):</label>
@@ -147,7 +146,7 @@
                     <option value="Nota Produtor Rural">Nota Fiscal de Produtor Rural</option>
                     <option value="Outros">Outros Documentos Fiscais</option>
                     <option value="Nota Promissória">Nota Promissória</option>
- 		            <option value="Comprovante de Venda">Comprovante de Venda</option>
+ 		    <option value="Comprovante de Venda">Comprovante de Venda</option>
                     <option value="RPA">RPA - Recibo de Pagamento a Autônomo</option>
                     <option value="Recibo">Recibo</option>
                     <option value="Comanda">Comanda</option>
@@ -166,9 +165,19 @@
                 <label>Forma de Pagamento:</label>
                 <select id="forma-pagto">
                     <option value="PIX">PIX</option>
-                    <option value="Cartão Débito">Cartão de Débito</option>
+                    <option value="Cartão Débito">
+                </select>
+                <label>📸 Foto da Nota Fiscal:</label>
+                <input type="file" id="foto-doc" accept="image/*" capture="environment">
+            </div>
+
+            <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
+                <label>Forma de Pagamento:</label>
+                <select id="forma-pagto">
+                    <option value="🚨 SEM COMPROVANTE PAGTO (FALTANDO)">🚨 SEM COMPROVANTE PAGTO (FALTANDO)</option>
+                    <option value="PIX">PIX</option>
+                    <option value="Cartão de Débito">Cartão de Débito</option>
                     <option value="Dinheiro">Dinheiro</option>
-                    <option value="Sem Comprovante Pagto">🚨 SEM COMPROVANTE</option>
                 </select>
                 <label>📸 Foto do Pagamento:</label>
                 <input type="file" id="foto-pagto" accept="image/*" capture="environment">
@@ -220,7 +229,7 @@
                         <th>Fornecedor</th>
                         <th>Descrição</th>
                         <th>Valor</th>
-                        <th>Anexos (Doc / Pagto)</th>
+                        <th>Anexos</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -238,7 +247,7 @@
 <script>
     document.getElementById('data').valueAsDate = new Date();
     let banco = JSON.parse(localStorage.getItem('wm_despesas')) || [];
-    let indiceEdicao = -1; // Variável para controlar se estamos editando um item
+    let indiceEdicao = -1; 
 
     function salvarCabecalho() {
         localStorage.setItem('wm_num', document.getElementById('num-caixinha').value);
@@ -283,11 +292,10 @@
         };
         
         if (indiceEdicao >= 0) {
-            // Se estiver editando, mantém as fotos antigas se não anexar novas
             if (!item.fotoDoc) item.fotoDoc = banco[indiceEdicao].fotoDoc;
             if (!item.fotoPagto) item.fotoPagto = banco[indiceEdicao].fotoPagto;
             banco[indiceEdicao] = item;
-            indiceEdicao = -1; // Sai do modo edição
+            indiceEdicao = -1; 
             document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
         } else {
             banco.push(item);
@@ -295,12 +303,17 @@
 
         localStorage.setItem('wm_despesas', JSON.stringify(banco));
         
-        // Limpar formulário
+        // Zera todos os campos do formulário para o próximo lançamento
         document.getElementById('desc').value = ''; 
         document.getElementById('valor').value = ''; 
         document.getElementById('fornecedor').value = '';
         document.getElementById('foto-doc').value = '';
         document.getElementById('foto-pagto').value = '';
+        
+        // Retorna as listas suspensas para a primeira opção (Aviso de Faltando)
+        document.getElementById('tipo-doc').selectedIndex = 0;
+        document.getElementById('forma-pagto').selectedIndex = 0;
+
         calcularSaldo(); 
         alert("✔️ Salvo com sucesso!");
     }
@@ -318,10 +331,9 @@
 
         let corpo = document.getElementById('corpo-tabela'); corpo.innerHTML = "";
         banco.forEach((item, index) => {
-            let fotosHTML = `<div style="display:flex; gap:10px;">`;
+            let fotosHTML = `<div style="display:flex; flex-direction:column; gap:5px; align-items:center;">`;
             if(item.fotoDoc) {
-                let legendaDoc = item.tipoDoc.includes('-') ? item.tipoDoc.split('-')[0].trim() : item.tipoDoc; // Pega só a sigla
-                fotosHTML += `<div class="anexo-box"><span class="legenda-foto">${legendaDoc}</span><img src="${item.fotoDoc}" class="foto-miniatura" onclick="verFoto('${item.fotoDoc}')"></div>`;
+                fotosHTML += `<div class="anexo-box"><span class="legenda-foto">${item.tipoDoc}</span><img src="${item.fotoDoc}" class="foto-miniatura" onclick="verFoto('${item.fotoDoc}')"></div>`;
             }
             if(item.fotoPagto) {
                 fotosHTML += `<div class="anexo-box"><span class="legenda-foto">${item.formaPagto}</span><img src="${item.fotoPagto}" class="foto-miniatura" onclick="verFoto('${item.fotoPagto}')"></div>`;
@@ -363,7 +375,7 @@
         indiceEdicao = index;
         document.getElementById('btn-salvar-principal').innerText = "💾 Atualizar Lançamento";
         voltarParaFormulario();
-        alert("✏️ Modo Edição: Os dados voltaram para a tela inicial. Corrija o que precisar e clique em 'Atualizar Lançamento'. As fotos antigas serão mantidas se você não tirar novas.");
+        alert("✏️ Modo Edição ativado. Corrija o que precisar e clique em 'Atualizar Lançamento'. As fotos antigas serão mantidas se você não tirar novas.");
     }
 
     function excluir(index) { 
@@ -387,13 +399,11 @@
         } 
     }
 
-    // Carregar dados salvos ao iniciar
     document.getElementById('num-caixinha').value = localStorage.getItem('wm_num') || '';
     document.getElementById('nome-gestor').value = localStorage.getItem('wm_gestor') || '';
     document.getElementById('saldo-anterior').value = localStorage.getItem('wm_anterior') || '';
     calcularSaldo();
 
-    // SERVICE WORKER PARA ATUALIZAÇÃO AUTOMÁTICA
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
             reg.onupdatefound = () => {
