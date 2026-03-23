@@ -28,8 +28,8 @@
         .painel-saldo, .formulario, .area-acoes { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .linha-saldo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; }
         .saldo-atual { font-size: 20px; font-weight: bold; text-align: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
-        .positivo { color: var(--verde-pos); }
-        .negativo { color: var(--vermelho-neg); }
+        .positivo { color: var(--verde-pos) !important; font-weight: bold; }
+        .negativo { color: var(--vermelho-neg) !important; font-weight: bold; }
         
         .formulario { display: flex; flex-direction: column; gap: 10px; }
         label { font-size: 12px; font-weight: bold; color: #555; margin-top: 5px; }
@@ -44,15 +44,19 @@
         .btn-encerrar { background-color: var(--vermelho-neg); color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; margin-top: 5px; }
 
         #tela-planilha { display: none; padding: 10px; background: white; min-height: 90vh; }
-        .tabela-container { overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .tabela-container { overflow-x: auto; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle; }
         th { background-color: var(--azul-wm); color: white; }
         .foto-miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; cursor: pointer; display: block; margin-top: 3px; }
         .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; max-width: 120px; }
         .legenda-foto { font-size: 10px; font-weight: bold; color: var(--azul-wm); word-wrap: break-word; text-align: center; }
 
-        /* REGRAS BLINDADAS PARA O PDF NÃO FICAR BRANCO */
+        /* CABEÇALHO AGORA APARECE NA TELA DE PLANILHA E NO PDF */
+        .cabecalho-oficial { display: block; font-size: 13px; line-height: 1.4; background: white; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; }
+        .cabecalho-oficial .info-box { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 8px; border-top: 1px solid #ccc; padding-top: 8px; }
+
+        /* REGRAS BLINDADAS PARA O PDF NÃO FICAR BRANCO NO GOOGLE DRIVE E ANDROID */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: landscape; margin: 0.5cm; }
@@ -62,19 +66,26 @@
             
             .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha, th:last-child, td:last-child { display: none !important; }
             
-            #tela-planilha, .tabela-container { display: block !important; opacity: 1 !important; visibility: visible !important; overflow: visible !important; height: auto !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            /* Tabela sem rolagem forçada */
+            #tela-planilha, .tabela-container { display: block !important; overflow: visible !important; overflow-x: visible !important; overflow-y: visible !important; height: auto !important; width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; }
             
-            table { display: table !important; font-size: 10px !important; width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; }
-            tr { display: table-row !important; page-break-inside: avoid !important; }
-            th, td { display: table-cell !important; padding: 4px !important; word-wrap: break-word !important; }
+            table { display: table !important; font-size: 10px !important; width: 100% !important; max-width: 100% !important; page-break-inside: auto; margin-top: 5px !important; table-layout: fixed !important; word-wrap: break-word !important; }
+            tr { display: table-row !important; page-break-inside: avoid; page-break-after: auto; }
+            th, td { display: table-cell !important; padding: 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important; white-space: normal !important; }
+            thead { display: table-header-group !important; }
+            tfoot { display: table-footer-group !important; }
+            tbody { display: table-row-group !important; }
             
-            .cabecalho-oficial { display: block !important; border: 1px solid #000; padding: 8px !important; margin-bottom: 10px !important; }
+            /* Compactando o cabeçalho no PDF */
+            .cabecalho-oficial { display: block !important; border: 1px solid #000 !important; padding: 8px !important; margin-bottom: 5px !important; border-radius: 0 !important; }
+            .cabecalho-oficial .info-box { grid-template-columns: 1fr 1fr !important; }
+            .cabecalho-oficial img { height: 40px !important; }
+            .cabecalho-oficial h3 { margin: 2px 0 !important; font-size: 14px !important; }
+            
             .foto-miniatura { width: 80px !important; height: auto !important; max-height: 80px !important; object-fit: contain !important; }
-            .anexo-box { border: none !important; padding: 0 !important; background: transparent !important; }
+            .anexo-box { border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 2px !important; }
+            .legenda-foto { font-size: 9px !important; }
         }
-
-        .cabecalho-oficial { display: none; font-size: 13px; line-height: 1.4; }
-        .cabecalho-oficial .info-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; border-top: 1px solid #ccc; padding-top: 8px; }
 
         #modal-foto { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
         #foto-ampliada { max-width: 90%; max-height: 80%; border: 3px solid white; }
@@ -108,18 +119,24 @@
                 </div>
             </div>
 
-            <div class="linha-saldo" style="margin-top: 15px;">
-                <label>Saldo Anterior (R$):</label>
-                <input type="number" id="saldo-anterior" step="0.01" style="width: 110px;" onchange="salvarCabecalho()">
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; flex-direction: column;">
+                    <label style="margin:0;">Saldo Anterior (R$):</label>
+                    <span style="font-size: 10px; color: #777; font-weight: normal;">(Se for negativo, colocar o sinal de -)</span>
+                </div>
+                <input type="number" id="saldo-anterior" step="0.01" style="width: 110px; text-align: center; font-weight: bold;" onchange="salvarCabecalho()">
             </div>
-            <div class="linha-saldo" style="color: var(--verde-pos);">
+            
+            <div class="linha-saldo" style="color: var(--verde-pos); margin-top: 10px;">
                 <span>Total Créditos WM:</span>
                 <span id="total-creditos">R$ 0,00</span>
             </div>
+            
             <div class="linha-saldo" style="color: var(--vermelho-neg);">
                 <span>Total Débitos:</span>
                 <span id="total-gasto">R$ 0,00</span>
             </div>
+            
             <div class="saldo-atual" id="saldo-atual-display">SALDO ATUAL: R$ 0,00</div>
         </div>
 
@@ -134,11 +151,14 @@
             </select>
             <label>Data:</label>
             <input type="date" id="data">
-            <label>Fornecedor:</label>
-            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, Restaurante...">
-            <label>Descrição do Gasto/Crédito:</label>
+            
+            <label>Fornecedor: <span style="color:red">*</span></label>
+            <input type="text" id="fornecedor" placeholder="Ex: Posto Ipiranga, WM Construções e Montagens...">
+            
+            <label>Descrição do Gasto/Crédito: <span style="color:red">*</span></label>
             <input type="text" id="desc" placeholder="Ex: Gasto com almoço, Crédito WM, etc...">
-            <label>Valor (R$):</label>
+            
+            <label>Valor (R$): <span style="color:red">*</span></label>
             <input type="number" id="valor" step="0.01" placeholder="0.00">
 
             <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee;">
@@ -156,8 +176,15 @@
                     <option value="Nota Fiscal de Produtor Rural">Nota Fiscal de Produtor Rural</option>
                     <option value="Outros Documentos Fiscais">Outros Documentos Fiscais</option>
                     <option value="RPA - Recibo de Pagamento a Autônomo">RPA - Recibo de Pagamento a Autônomo</option>
-                    <option value="Recibo">Recibo / Comanda</option>
-                    <option value="Conta de Consumo (Água/Luz/Tel)">Conta de Consumo (Água/Luz/Tel)</option>
+                    <option value="Nota Promissória">Nota Promissória</option>
+                    <option value="Comprovante de Venda">Comprovante de Venda</option>
+                    <option value="Recibo">Recibo</option>
+                    <option value="Comanda">Comanda</option>
+                    <option value="Orçamento">Orçamento</option>           
+                    <option value="Conta de Energia Elétrica">Conta de Energia Elétrica</option>
+                    <option value="Conta de Água/Esgoto">Conta de Água/Esgoto</option>
+                    <option value="Conta de Telecomunicação/Internet">Conta de Telecomunicação/Internet</option>
+                    <option value="Conta de Fornecimento de Gás">Conta de Fornecimento de Gás</option>
                 </select>
                 <label>📸 Foto da Nota Fiscal:</label>
                 <input type="file" id="foto-doc" accept="image/*" capture="environment">
@@ -170,8 +197,13 @@
                     <option value="PIX">PIX</option>
                     <option value="Cartão de Débito">Cartão de Débito</option>
                     <option value="Cartão de Crédito">Cartão de Crédito</option>
+                    <option value="Boleto Bancário">Boleto Bancário</option>
+                    <option value="Transferência Bancária (TED/DOC)">Transferência Bancária (TED/DOC)</option>
+                    <option value="Depósito Bancário">Depósito Bancário</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Vale / Voucher">Vale / Voucher (Alimentação, Refeição, etc.)</option>
                     <option value="Dinheiro">Dinheiro</option>
-                    <option value="Transferência/TED">Transferência/TED</option>
+                    <option value="Outros">Outros</option>
                 </select>
                 <label>📸 Foto do Pagamento:</label>
                 <input type="file" id="foto-pagto" accept="image/*" capture="environment">
@@ -189,15 +221,16 @@
     </div>
 
     <div id="tela-planilha">
-        <button class="btn-voltar" onclick="voltarParaFormulario()" style="width: 100%; padding: 10px; margin-bottom: 10px;">⬅ Voltar para Lançamentos</button>
+        <button class="btn-voltar" onclick="voltarParaFormulario()" style="width: 100%; padding: 10px; margin-bottom: 10px; font-weight: bold; background: #555; color: white; border: none; border-radius: 5px; cursor: pointer;">⬅ Voltar para Lançamentos</button>
+        
         <div class="cabecalho-oficial" id="cabecalho-pdf">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 5px;">
                 <img src="LOGOTIPO.jpg" style="height: 50px;">
                 <div style="text-align: center;">
-                    <h3 style="margin:0;">RELATÓRIO DE CAIXINHA</h3>
-                    <small id="print-data-emissao"></small>
+                    <h3 style="margin:0; font-size: 15px;">RELATÓRIO DE CAIXINHA</h3>
+                    <small id="print-data-emissao" style="color: #555;"></small>
                 </div>
-                <img src="Captura de tela 2026-02-13 132630.jpg" style="height: 50px;">
+                <img src="Captura de tela 2026-02-13 132630.jpg" style="height: 50px; border-radius: 4px;">
             </div>
             <div class="info-box">
                 <div>
@@ -206,14 +239,17 @@
                     <strong>GESTOR:</strong> <span id="print-gestor"></span><br>
                     <strong>Nº DO CAIXINHA:</strong> <span id="print-num"></span>
                 </div>
-                <div style="background: #f9f9f9; padding: 5px; border: 1px solid #ddd;">
-                    <strong>Saldo Anterior:</strong> <span id="print-anterior"></span> | 
+                <div style="background: #fdf5e6; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <strong>Saldo Anterior:</strong> <span id="print-anterior"></span><br>
                     <strong>Créditos:</strong> <span id="print-creditos" style="color:green"></span><br>
-                    <strong>Débitos:</strong> <span id="print-debitos" style="color:red"></span> | 
-                    <strong>SALDO ATUAL:</strong> <span id="print-final" style="font-weight:bold"></span>
+                    <strong>Débitos:</strong> <span id="print-debitos" style="color:red"></span><br>
+                    <div style="border-top: 1px solid #ccc; margin-top: 5px; padding-top: 5px;">
+                        <strong>SALDO ATUAL:</strong> <span id="print-final" style="font-weight:bold; font-size: 14px;"></span>
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="tabela-container">
             <table id="tabela-dados">
                 <thead>
@@ -234,7 +270,7 @@
 
     <div id="modal-foto">
         <img id="foto-ampliada" src="">
-        <button onclick="document.getElementById('modal-foto').style.display='none'" style="margin-top:10px; padding:10px; cursor:pointer;">Fechar</button>
+        <button onclick="document.getElementById('modal-foto').style.display='none'" style="margin-top:10px; padding:10px; font-weight: bold; cursor:pointer;">Fechar Imagem</button>
     </div>
 </div>
 
@@ -251,12 +287,23 @@
     }
 
     function calcularSaldo() {
-        let ant = parseFloat(document.getElementById('saldo-anterior').value) || 0;
+        let inputAnterior = document.getElementById('saldo-anterior');
+        let ant = parseFloat(inputAnterior.value) || 0;
+        
+        // Colore o input do Saldo Anterior (Verde se >= 0, Vermelho se < 0)
+        if (ant >= 0) {
+            inputAnterior.className = "positivo";
+        } else {
+            inputAnterior.className = "negativo";
+        }
+
         let cred = banco.filter(i => i.categoria.includes('CRÉDITO')).reduce((s, i) => s + i.valor, 0);
         let deb = banco.filter(i => !i.categoria.includes('CRÉDITO')).reduce((s, i) => s + i.valor, 0);
         let total = ant + cred - deb;
+        
         document.getElementById('total-creditos').innerText = cred.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('total-gasto').innerText = deb.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        
         let display = document.getElementById('saldo-atual-display');
         display.innerText = "SALDO ATUAL: " + total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         display.className = total >= 0 ? "saldo-atual positivo" : "saldo-atual negativo";
@@ -293,7 +340,13 @@
 
     async function salvarDespesa() {
         let valor = parseFloat(document.getElementById('valor').value);
-        if(!valor || !document.getElementById('desc').value) return alert("Preencha Valor e Descrição!");
+        let desc = document.getElementById('desc').value;
+        let fornecedor = document.getElementById('fornecedor').value;
+        
+        // Validação de Campos Obrigatórios (incluindo o fornecedor)
+        if(!valor || !desc || !fornecedor) {
+            return alert("⚠️ Atenção: Preencha o Fornecedor, a Descrição e o Valor para salvar!");
+        }
         
         document.getElementById('btn-salvar-principal').innerText = "⏳ Processando...";
         let fDoc = await comprimirImagem(document.getElementById('foto-doc').files[0]);
@@ -302,8 +355,8 @@
         let item = {
             categoria: document.getElementById('categoria').value,
             data: document.getElementById('data').value.split('-').reverse().join('/'),
-            fornecedor: document.getElementById('fornecedor').value || '---',
-            descricao: document.getElementById('desc').value,
+            fornecedor: fornecedor,
+            descricao: desc,
             valor: valor,
             tipoDoc: document.getElementById('tipo-doc').value,
             formaPagto: document.getElementById('forma-pagto').value,
@@ -323,12 +376,18 @@
 
         try {
             localStorage.setItem('wm_despesas', JSON.stringify(banco));
-            document.getElementById('desc').value = ''; document.getElementById('valor').value = ''; document.getElementById('fornecedor').value = '';
-            document.getElementById('foto-doc').value = ''; document.getElementById('foto-pagto').value = '';
+            document.getElementById('desc').value = ''; 
+            document.getElementById('valor').value = ''; 
+            document.getElementById('fornecedor').value = '';
+            document.getElementById('foto-doc').value = ''; 
+            document.getElementById('foto-pagto').value = '';
+            document.getElementById('tipo-doc').selectedIndex = 0;
+            document.getElementById('forma-pagto').selectedIndex = 0;
             document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
-            calcularSaldo(); alert("✔️ Salvo!");
+            calcularSaldo(); 
+            alert("✔️ Lançamento Salvo!");
         } catch (e) {
-            alert("❌ Memória cheia! Exclua itens antigos.");
+            alert("❌ Memória cheia! Exclua itens antigos ou encerre o caixinha.");
             document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
         }
     }
@@ -336,22 +395,47 @@
     function abrirPlanilha() {
         document.getElementById('tela-principal').style.display = 'none';
         document.getElementById('tela-planilha').style.display = 'block';
-        document.getElementById('print-num').innerText = document.getElementById('num-caixinha').value;
-        document.getElementById('print-gestor').innerText = document.getElementById('nome-gestor').value;
-        document.getElementById('print-anterior').innerText = "R$ " + (parseFloat(document.getElementById('saldo-anterior').value) || 0).toFixed(2);
+        
+        // Atualiza os dados do Cabeçalho Oficial da Planilha
+        document.getElementById('print-num').innerText = document.getElementById('num-caixinha').value || "Não informado";
+        document.getElementById('print-gestor').innerText = document.getElementById('nome-gestor').value || "Não informado";
+        
+        let ant = parseFloat(document.getElementById('saldo-anterior').value) || 0;
+        let printAnterior = document.getElementById('print-anterior');
+        printAnterior.innerText = ant.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        printAnterior.className = ant >= 0 ? "positivo" : "negativo";
+
         document.getElementById('print-creditos').innerText = document.getElementById('total-creditos').innerText;
         document.getElementById('print-debitos').innerText = document.getElementById('total-gasto').innerText;
-        document.getElementById('print-final').innerText = document.getElementById('saldo-atual-display').innerText.replace("SALDO ATUAL: ","");
-        document.getElementById('print-data-emissao').innerText = "Emitido em: " + new Date().toLocaleDateString();
+        
+        let displayAtual = document.getElementById('saldo-atual-display');
+        let printFinal = document.getElementById('print-final');
+        printFinal.innerText = displayAtual.innerText.replace("SALDO ATUAL: ","");
+        printFinal.className = displayAtual.className.includes('positivo') ? "positivo" : "negativo";
+        
+        document.getElementById('print-data-emissao').innerText = "Emitido em: " + new Date().toLocaleDateString() + " às " + new Date().toLocaleTimeString();
 
-        let corpo = document.getElementById('corpo-tabela'); corpo.innerHTML = "";
+        // Monta a Tabela
+        let corpo = document.getElementById('corpo-tabela'); 
+        corpo.innerHTML = "";
         banco.forEach((item, index) => {
-            let fHTML = `<div style="display:flex; gap:10px; justify-content:center;">`;
+            let fHTML = `<div style="display:flex; flex-direction:row; gap:10px; justify-content:center; align-items:flex-start;">`;
             if(item.fotoDoc) fHTML += `<div class="anexo-box"><span class="legenda-foto">${item.tipoDoc}</span><img src="${item.fotoDoc}" class="foto-miniatura" onclick="verFoto('${item.fotoDoc}')"></div>`;
             if(item.fotoPagto) fHTML += `<div class="anexo-box"><span class="legenda-foto">${item.formaPagto}</span><img src="${item.fotoPagto}" class="foto-miniatura" onclick="verFoto('${item.fotoPagto}')"></div>`;
             fHTML += `</div>`;
             
-            corpo.innerHTML += `<tr><td>${item.categoria}</td><td>${item.data}</td><td>${item.fornecedor}</td><td>${item.descricao}</td><td>R$ ${item.valor.toFixed(2)}</td><td>${fHTML}</td><td><button onclick="editar(${index})">✏️</button><button onclick="excluir(${index})">🗑️</button></td></tr>`;
+            corpo.innerHTML += `<tr>
+                <td>${item.categoria}</td>
+                <td>${item.data}</td>
+                <td>${item.fornecedor}</td>
+                <td>${item.descricao}</td>
+                <td style="white-space:nowrap; font-weight:bold;">R$ ${item.valor.toFixed(2)}</td>
+                <td>${fHTML || '---'}</td>
+                <td style="text-align:center;">
+                    <button onclick="editar(${index})" style="background:orange; color:white; border:none; padding:8px; border-radius:3px; cursor:pointer; margin-bottom:5px; width: 100%;">✏️ Editar</button>
+                    <button onclick="excluir(${index})" style="background:red; color:white; border:none; padding:8px; border-radius:3px; cursor:pointer; width: 100%;">🗑️ Excluir</button>
+                </td>
+            </tr>`;
         });
     }
 
@@ -368,19 +452,18 @@
         document.getElementById('tipo-doc').value = it.tipoDoc;
         document.getElementById('forma-pagto').value = it.formaPagto;
         indiceEdicao = index;
-        document.getElementById('btn-salvar-principal').innerText = "💾 Atualizar";
+        document.getElementById('btn-salvar-principal').innerText = "💾 Atualizar Lançamento";
         voltarParaFormulario();
     }
 
-    function excluir(index) { if(confirm("Excluir?")) { banco.splice(index,1); localStorage.setItem('wm_despesas', JSON.stringify(banco)); abrirPlanilha(); calcularSaldo(); } }
+    function excluir(index) { if(confirm("Excluir definitivamente?")) { banco.splice(index,1); localStorage.setItem('wm_despesas', JSON.stringify(banco)); abrirPlanilha(); calcularSaldo(); } }
 
     function gerarPDF() { 
         abrirPlanilha(); 
-        // Aumentado para 1.5s para garantir renderização no Android
         setTimeout(() => { window.print(); }, 1500); 
     }
 
-    function encerrarCaixinha() { if(confirm("Zerar tudo?")) { localStorage.clear(); location.reload(); } }
+    function encerrarCaixinha() { if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { localStorage.clear(); location.reload(); } }
 
     document.getElementById('num-caixinha').value = localStorage.getItem('wm_num') || '';
     document.getElementById('nome-gestor').value = localStorage.getItem('wm_gestor') || '';
