@@ -48,47 +48,42 @@
         table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle; }
         th { background-color: var(--azul-wm); color: white; }
-        .foto-miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; cursor: pointer; display: block; margin-top: 3px; }
-        .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; max-width: 120px; }
-        .legenda-foto { font-size: 10px; font-weight: bold; color: var(--azul-wm); word-wrap: break-word; text-align: center; }
+        
+        /* CORREÇÃO DAS IMAGENS ESPREMIDAS */
+        .foto-miniatura { width: 70px; height: auto; max-height: 70px; object-fit: contain; border-radius: 4px; cursor: pointer; display: block; margin-top: 3px; flex-shrink: 0; }
+        .anexo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; border: 1px solid #eee; text-align: center; width: 80px; flex-shrink: 0; }
+        .legenda-foto { font-size: 9px; font-weight: bold; color: var(--azul-wm); word-wrap: break-word; text-align: center; line-height: 1.1; margin-bottom: 2px; }
 
-        /* CABEÇALHO AGORA APARECE NA TELA DE PLANILHA E NO PDF */
         .cabecalho-oficial { display: block; font-size: 13px; line-height: 1.4; background: white; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; }
         .cabecalho-oficial .info-box { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 8px; border-top: 1px solid #ccc; padding-top: 8px; }
 
-        /* REGRAS BLINDADAS PARA O PDF NÃO FICAR BRANCO NO GOOGLE DRIVE E ANDROID */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: landscape; margin: 0.5cm; }
-            
             body, html { display: block !important; background-color: white !important; height: auto !important; min-height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
             .app-container { border: none !important; box-shadow: none !important; max-width: 100% !important; width: 100% !important; display: block !important; height: auto !important; min-height: auto !important; overflow: visible !important; padding: 0 !important; margin: 0 !important; }
-            
             .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha, th:last-child, td:last-child { display: none !important; }
-            
-            /* Tabela sem rolagem forçada */
             #tela-planilha, .tabela-container { display: block !important; overflow: visible !important; overflow-x: visible !important; overflow-y: visible !important; height: auto !important; width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; }
-            
             table { display: table !important; font-size: 10px !important; width: 100% !important; max-width: 100% !important; page-break-inside: auto; margin-top: 5px !important; table-layout: fixed !important; word-wrap: break-word !important; }
             tr { display: table-row !important; page-break-inside: avoid; page-break-after: auto; }
             th, td { display: table-cell !important; padding: 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important; white-space: normal !important; }
             thead { display: table-header-group !important; }
             tfoot { display: table-footer-group !important; }
             tbody { display: table-row-group !important; }
-            
-            /* Compactando o cabeçalho no PDF */
             .cabecalho-oficial { display: block !important; border: 1px solid #000 !important; padding: 8px !important; margin-bottom: 5px !important; border-radius: 0 !important; }
             .cabecalho-oficial .info-box { grid-template-columns: 1fr 1fr !important; }
             .cabecalho-oficial img { height: 40px !important; }
             .cabecalho-oficial h3 { margin: 2px 0 !important; font-size: 14px !important; }
             
+            /* Ajuste de imagem no PDF */
             .foto-miniatura { width: 80px !important; height: auto !important; max-height: 80px !important; object-fit: contain !important; }
-            .anexo-box { border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 2px !important; }
+            .anexo-box { border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 2px !important; width: auto !important; }
             .legenda-foto { font-size: 9px !important; }
         }
 
+        /* Modal da foto atualizado para evitar distorção */
         #modal-foto { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
-        #foto-ampliada { max-width: 90%; max-height: 80%; border: 3px solid white; }
+        #foto-ampliada { max-width: 95%; max-height: 80vh; object-fit: contain; border: 3px solid white; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -290,7 +285,6 @@
         let inputAnterior = document.getElementById('saldo-anterior');
         let ant = parseFloat(inputAnterior.value) || 0;
         
-        // Colore o input do Saldo Anterior (Verde se >= 0, Vermelho se < 0)
         if (ant >= 0) {
             inputAnterior.className = "positivo";
         } else {
@@ -343,7 +337,6 @@
         let desc = document.getElementById('desc').value;
         let fornecedor = document.getElementById('fornecedor').value;
         
-        // Validação de Campos Obrigatórios (incluindo o fornecedor)
         if(!valor || !desc || !fornecedor) {
             return alert("⚠️ Atenção: Preencha o Fornecedor, a Descrição e o Valor para salvar!");
         }
@@ -396,7 +389,6 @@
         document.getElementById('tela-principal').style.display = 'none';
         document.getElementById('tela-planilha').style.display = 'block';
         
-        // Atualiza os dados do Cabeçalho Oficial da Planilha
         document.getElementById('print-num').innerText = document.getElementById('num-caixinha').value || "Não informado";
         document.getElementById('print-gestor').innerText = document.getElementById('nome-gestor').value || "Não informado";
         
@@ -415,7 +407,6 @@
         
         document.getElementById('print-data-emissao').innerText = "Emitido em: " + new Date().toLocaleDateString() + " às " + new Date().toLocaleTimeString();
 
-        // Monta a Tabela
         let corpo = document.getElementById('corpo-tabela'); 
         corpo.innerHTML = "";
         banco.forEach((item, index) => {
@@ -469,6 +460,21 @@
     document.getElementById('nome-gestor').value = localStorage.getItem('wm_gestor') || '';
     document.getElementById('saldo-anterior').value = localStorage.getItem('wm_anterior') || '';
     calcularSaldo();
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            reg.onupdatefound = () => {
+                const w = reg.installing;
+                w.onstatechange = () => { 
+                    if (w.state === 'installed' && navigator.serviceWorker.controller) { 
+                        if(confirm("🚀 Nova versão do aplicativo disponível! Atualizar agora? (Seus dados não serão perdidos)")) {
+                            location.reload(); 
+                        } 
+                    } 
+                };
+            };
+        });
+    }
 </script>
 </body>
 </html>
