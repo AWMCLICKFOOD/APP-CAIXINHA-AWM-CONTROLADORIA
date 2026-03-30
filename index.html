@@ -101,7 +101,6 @@
             text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
         .login-box img { max-height: 60px; margin-bottom: 10px; object-fit: contain; }
-        .login-box input { margin: 15px 0; text-align: center; font-size: 20px; font-weight: bold; width: 100%; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -111,7 +110,12 @@
         <img src="LOGOTIPO.jpg" alt="Logo WM">
         <h3 style="color: var(--azul-wm); margin-top: 0; margin-bottom: 5px;">ACESSO RESTRITO</h3>
         <p style="color: #666; font-size: 12px; margin-bottom: 5px;">Área exclusiva para funcionários ativos.</p>
-        <input type="password" id="senha-input" placeholder="SENHA">
+        
+        <div style="position: relative; width: 100%; margin: 15px 0;">
+            <input type="password" id="senha-input" placeholder="SENHA" style="width: 100%; margin: 0; padding-right: 40px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px;">
+            <span id="icone-olho" onclick="mostrarSenha()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 22px;" title="Mostrar Senha">👁️</span>
+        </div>
+
         <button class="btn-salvar" style="width: 100%; font-size: 16px; padding: 15px;" onclick="validarAcesso()">ENTRAR NO APP</button>
         <p id="erro-login" style="color: red; font-size: 13px; font-weight: bold; display: none; margin-top: 15px;">❌ Senha incorreta!</p>
     </div>
@@ -302,10 +306,7 @@
     // ==========================================
     // 🔒 CONFIGURAÇÃO DE SENHA DO APP
     // ==========================================
-    // Quando demitir alguém, mude a senha abaixo.
-    // O app da pessoa vai atualizar quando ela clicar em "Encerrar o Caixinha" 
-    // e ela não conseguirá mais entrar!
-    const SENHA_MESTRA = "wm2026"; 
+    const SENHA_MESTRA = "WM2024"; 
 
     window.onload = function() {
         const autorizado = localStorage.getItem('acesso_concedido');
@@ -323,7 +324,21 @@
             document.getElementById('erro-login').style.display = 'block';
         }
     }
+
     // ==========================================
+    // 👀 FUNÇÃO DO OLHINHO DA SENHA
+    // ==========================================
+    function mostrarSenha() {
+        let input = document.getElementById('senha-input');
+        let icone = document.getElementById('icone-olho');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icone.innerText = '🙈';
+        } else {
+            input.type = 'password';
+            icone.innerText = '👁️';
+        }
+    }
 
     document.getElementById('data').valueAsDate = new Date();
     let banco = JSON.parse(localStorage.getItem('wm_despesas')) || [];
@@ -509,15 +524,10 @@
         setTimeout(() => { window.print(); }, 1500); 
     }
 
-    // ==========================================
-    // 🔄 NOVA FUNÇÃO DE ENCERRAR E ATUALIZAR
-    // ==========================================
     async function encerrarCaixinha() { 
         if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { 
-            // Limpa os dados de uso e TIRA o acesso livre, forçando a pedir senha de novo
             localStorage.clear(); 
             
-            // Se tiver internet, destrói o cache antigo para baixar a versão atualizada
             if (navigator.onLine && 'serviceWorker' in navigator) {
                 try {
                     const keys = await caches.keys();
@@ -534,11 +544,9 @@
                 }
             }
             
-            // Recarrega puxando do GitHub fresco
             location.reload(true); 
         } 
     }
-    // ==========================================
 
     document.getElementById('num-caixinha').value = localStorage.getItem('wm_num') || '';
     document.getElementById('nome-gestor').value = localStorage.getItem('wm_gestor') || '';
@@ -546,11 +554,37 @@
     calcularSaldo();
 
     // ==========================================
-    // 📱 REGISTRO DO SERVICE WORKER (SILENCIOSO)
+    // 📱 REGISTRO DO SERVICE WORKER E ATUALIZAÇÃO AUTOMÁTICA
     // ==========================================
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(err => {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            // 1. Força o navegador a verificar no servidor se há código novo
+            reg.update();
+
+            // 2. Detecta automaticamente se você subiu uma atualização
+            reg.onupdatefound = () => {
+                const novoWorker = reg.installing;
+                novoWorker.onstatechange = () => {
+                    if (novoWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        console.log("Nova versão detectada! Atualizando app silenciosamente...");
+                        // Limpa o cache antigo e recarrega a tela sozinho
+                        caches.keys().then(keys => {
+                            Promise.all(keys.map(key => caches.delete(key))).then(() => {
+                                window.location.reload(true);
+                            });
+                        });
+                    }
+                };
+            };
+        }).catch(err => {
             console.log("Erro no Service Worker:", err);
+        });
+
+        // 3. Verifica atualizações toda vez que o usuário minimiza e volta pro app
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                navigator.serviceWorker.ready.then(reg => reg.update());
+            }
         });
     }
 </script>
