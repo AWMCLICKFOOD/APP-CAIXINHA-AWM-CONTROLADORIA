@@ -113,7 +113,7 @@
         
         <div style="position: relative; width: 100%; margin: 15px 0;">
             <input type="password" id="senha-input" placeholder="SENHA" style="width: 100%; margin: 0; padding-right: 40px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px;">
-            <span id="icone-olho" onclick="mostrarSenha()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 22px;" title="Mostrar Senha">👁️‍🗨️</span>
+            <img id="icone-olho" src="Emoji com as mãos nos olhos.png" onclick="mostrarSenha()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; height: 26px; width: 26px; object-fit: contain;" title="Mostrar/Ocultar Senha">
         </div>
 
         <button class="btn-salvar" style="width: 100%; font-size: 16px; padding: 15px;" onclick="validarAcesso()">ENTRAR NO APP</button>
@@ -306,9 +306,6 @@
     // ==========================================
     // 🔒 CONFIGURAÇÃO DE SENHA DO APP (CRIPTOGRAFADA)
     // ==========================================
-    
-    // IMPORTANTE: Este é apenas um código de exemplo. 
-    // Entre no site online, digite wm2026, pegue o Hash gerado e cole AQUI dentro das aspas!
     const HASH_SENHA_MESTRA = "544f77a1f22a352c4160858b2d787cba9576be6d70b0ed53b74a8139ca861a61";
 
     window.onload = function() {
@@ -318,7 +315,6 @@
         }
     };
 
-    // Função que calcula a criptografia OFFLINE
     async function gerarHash(texto) {
         const encoder = new TextEncoder();
         const data = encoder.encode(texto);
@@ -328,7 +324,6 @@
         return hashHex;
     }
 
-    // Validação de senha
     async function validarAcesso() {
         const senhaDigitada = document.getElementById('senha-input').value;
         const hashDigitado = await gerarHash(senhaDigitada);
@@ -342,20 +337,24 @@
     }
 
     // ==========================================
-    // 👀 FUNÇÃO DO OLHINHO DA SENHA 
+    // 👀 FUNÇÃO DO OLHINHO COM AS TUAS IMAGENS
     // ==========================================
     function mostrarSenha() {
         let input = document.getElementById('senha-input');
         let icone = document.getElementById('icone-olho');
+        
         if (input.type === 'password') {
             input.type = 'text'; 
-            icone.innerText = '👁️'; 
+            // Muda para a imagem do olho aberto
+            icone.src = 'olho-aberto.png'; 
         } else {
             input.type = 'password'; 
-            icone.innerText = '👁️‍🗨️'; 
+            // Volta para o teu Emoji de mãos nos olhos
+            icone.src = 'Emoji com as mãos nos olhos.png'; 
         }
     }
 
+    // Funções de lógica de dados mantidas conforme anteriormente...
     document.getElementById('data').valueAsDate = new Date();
     let banco = JSON.parse(localStorage.getItem('wm_despesas')) || [];
     let indiceEdicao = -1; 
@@ -540,21 +539,14 @@
         setTimeout(() => { window.print(); }, 1500); 
     }
 
-    // ==========================================
-    // 🚀 NOVA FUNÇÃO DE ENCERRAR O CAIXINHA (TRUQUE DO CACHE)
-    // ==========================================
+    // Função de limpeza profunda de cache ao encerrar
     async function encerrarCaixinha() { 
         if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { 
-            
-            // 1. Limpa as despesas, saldos e senhas salvas
             localStorage.clear(); 
-            
-            // 2. Destrói o Cache e o Service Worker (motor offline)
             if ('serviceWorker' in navigator) {
                 try {
                     const nomesCaches = await caches.keys();
                     await Promise.all(nomesCaches.map(nome => caches.delete(nome)));
-                    
                     const registros = await navigator.serviceWorker.getRegistrations();
                     for (let registro of registros) {
                         await registro.unregister();
@@ -564,8 +556,6 @@
                     console.error("Erro ao limpar cache profundo:", erro);
                 }
             }
-            
-            // 3. Recarrega a página forçando um link "fresco" com a data/hora
             window.location.href = window.location.pathname + '?atualizar=' + new Date().getTime();
         } 
     }
@@ -575,13 +565,9 @@
     document.getElementById('saldo-anterior').value = localStorage.getItem('wm_anterior') || '';
     calcularSaldo();
 
-    // ==========================================
-    // 📱 REGISTRO DO SERVICE WORKER E ATUALIZAÇÃO AUTOMÁTICA
-    // ==========================================
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
             reg.update();
-
             reg.onupdatefound = () => {
                 const novoWorker = reg.installing;
                 novoWorker.onstatechange = () => {
@@ -598,7 +584,6 @@
         }).catch(err => {
             console.log("Erro no Service Worker:", err);
         });
-
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
                 navigator.serviceWorker.ready.then(reg => reg.update());
