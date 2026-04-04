@@ -304,9 +304,12 @@
 
 <script>
     // ==========================================
-    // 🔒 CONFIGURAÇÃO DE SENHA DO APP
+    // 🔒 CONFIGURAÇÃO DE SENHA DO APP (CRIPTOGRAFADA)
     // ==========================================
-    const SENHA_MESTRA = "wm2025"; 
+    
+    // IMPORTANTE: Cole aqui o hash que o site gerou para a sua senha!
+    // Para efeito de teste, mantive este Hash que passei como exemplo
+    const HASH_SENHA_MESTRA = "d0901e13e0bd9116e0339591e1d03ff44f2537fc1bc7e49eb72bc1df3e020d58";
 
     window.onload = function() {
         const autorizado = localStorage.getItem('acesso_concedido');
@@ -315,9 +318,22 @@
         }
     };
 
-    function validarAcesso() {
+    // Função que calcula a criptografia OFFLINE usando a ferramenta nativa do navegador
+    async function gerarHash(texto) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(texto);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+
+    // Validação que transforma a senha digitada em Hash antes de comparar
+    async function validarAcesso() {
         const senhaDigitada = document.getElementById('senha-input').value;
-        if (senhaDigitada === SENHA_MESTRA) {
+        const hashDigitado = await gerarHash(senhaDigitada);
+
+        if (hashDigitado === HASH_SENHA_MESTRA) {
             localStorage.setItem('acesso_concedido', 'true');
             document.getElementById('tela-login').style.display = 'none';
         } else {
@@ -326,17 +342,17 @@
     }
 
     // ==========================================
-    // 👀 FUNÇÃO DO OLHINHO DA SENHA (LÓGICA INVERTIDA E SEM MACACO)
+    // 👀 FUNÇÃO DO OLHINHO DA SENHA 
     // ==========================================
     function mostrarSenha() {
         let input = document.getElementById('senha-input');
         let icone = document.getElementById('icone-olho');
         if (input.type === 'password') {
-            input.type = 'text'; // Mostra a senha como texto
-            icone.innerText = '👁️'; // Muda para Olho Aberto ao exibir
+            input.type = 'text'; 
+            icone.innerText = '👁️'; 
         } else {
-            input.type = 'password'; // Oculta a senha como bolinhas
-            icone.innerText = '👁️‍🗨️'; // Muda para Olho Fechado/Barrado ao ocultar
+            input.type = 'password'; 
+            icone.innerText = '👁️‍🗨️'; 
         }
     }
 
@@ -558,16 +574,13 @@
     // ==========================================
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
-            // 1. Força o navegador a verificar no servidor se há código novo
             reg.update();
 
-            // 2. Detecta automaticamente se você subiu uma atualização
             reg.onupdatefound = () => {
                 const novoWorker = reg.installing;
                 novoWorker.onstatechange = () => {
                     if (novoWorker.state === 'installed' && navigator.serviceWorker.controller) {
                         console.log("Nova versão detectada! Atualizando app silenciosamente...");
-                        // Limpa o cache antigo e recarrega a tela sozinho
                         caches.keys().then(keys => {
                             Promise.all(keys.map(key => caches.delete(key))).then(() => {
                                 window.location.reload(true);
@@ -580,7 +593,6 @@
             console.log("Erro no Service Worker:", err);
         });
 
-        // 3. Verifica atualizações toda vez que o usuário minimiza e volta pro app
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
                 navigator.serviceWorker.ready.then(reg => reg.update());
