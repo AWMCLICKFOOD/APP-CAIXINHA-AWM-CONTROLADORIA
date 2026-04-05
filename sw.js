@@ -8,7 +8,7 @@ const arquivosParaGuardar = [
   './sw.js',
   './LOGOTIPO.jpg',
   './Captura de tela 2026-02-13 132630.jpg',
-  './icone.v2.png'
+  './icone_v2.png'
 ];
 
 self.addEventListener('install', evento => {
