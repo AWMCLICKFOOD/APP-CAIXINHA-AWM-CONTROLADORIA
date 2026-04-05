@@ -2,20 +2,26 @@
   "name": "AWM Controle de Caixinha",
   "short_name": "AWM CONTROLADORIA",
   "description": "App de Gestão de Caixinha da WM Construções e Controladoria",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a233a",
   "icons": [
     {
-      "src": "icone_v3.png?v=10",
+      "src": "icone_v3.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icone_v3.png?v=10",
+      "src": "icone_v3.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icone_v3.png",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
     }
@@ -25,11 +31,11 @@
       "name": "Novo Lançamento",
       "short_name": "Novo Gasto",
       "description": "Adicionar nova despesa ou crédito",
-      "url": "index.html",
+      "url": "./index.html",
       "icons": [
         {
-          "src": "icone_v3.png?v=10",
-          "sizes": "192x192",
+          "src": "icone_v3.png",
+          "sizes": "any",
           "type": "image/png"
         }
       ]
@@ -38,11 +44,11 @@
       "name": "Ver Planilha",
       "short_name": "Planilha",
       "description": "Acessar relatório do caixinha",
-      "url": "index.html?tela=planilha",
+      "url": "./index.html?tela=planilha",
       "icons": [
         {
-          "src": "icone_v3.png?v=10",
-          "sizes": "192x192",
+          "src": "icone_v3.png",
+          "sizes": "any",
           "type": "image/png"
         }
       ]
