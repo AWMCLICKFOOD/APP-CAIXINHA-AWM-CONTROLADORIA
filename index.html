@@ -113,7 +113,7 @@
         
         <div style="position: relative; width: 100%; margin: 15px 0;">
             <input type="password" id="senha-input" placeholder="SENHA" style="width: 100%; margin: 0; padding-right: 40px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px;">
-            <img id="icone-olho" src="Emoji com as mãos nos olhos.png" onclick="mostrarSenha()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; height: 26px; width: 26px; object-fit: contain;" title="Mostrar/Ocultar Senha">
+            <img id="icone-olho" src="OLHOFECHADO.png" onclick="mostrarSenha()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; height: 26px; width: 26px; object-fit: contain;" title="Mostrar/Ocultar Senha">
         </div>
 
         <button class="btn-salvar" style="width: 100%; font-size: 16px; padding: 15px;" onclick="validarAcesso()">ENTRAR NO APP</button>
@@ -337,7 +337,7 @@
     }
 
     // ==========================================
-    // 👀 FUNÇÃO DO OLHINHO COM AS TUAS IMAGENS (NOMES ATUALIZADOS)
+    // 👀 FUNÇÃO DO OLHINHO COM AS TUAS IMAGENS
     // ==========================================
     function mostrarSenha() {
         let input = document.getElementById('senha-input');
@@ -345,16 +345,13 @@
         
         if (input.type === 'password') {
             input.type = 'text'; 
-            // Agora o nome está idêntico ao arquivo que você enviou (todo em maiúsculo)
             icone.src = 'OLHOABERTO.png'; 
         } else {
             input.type = 'password'; 
-            // Volta para o teu Emoji de mãos nos olhos
             icone.src = 'OLHOFECHADO.png'; 
         }
     }
 
-    // Funções de lógica de dados mantidas conforme anteriormente...
     document.getElementById('data').valueAsDate = new Date();
     let banco = JSON.parse(localStorage.getItem('wm_despesas')) || [];
     let indiceEdicao = -1; 
@@ -539,7 +536,6 @@
         setTimeout(() => { window.print(); }, 1500); 
     }
 
-    // Função de limpeza profunda de cache ao encerrar
     async function encerrarCaixinha() { 
         if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { 
             localStorage.clear(); 
