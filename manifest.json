@@ -8,15 +8,15 @@
   "theme_color": "#1a233a",
   "icons": [
     {
-      "src": "icone_v2.jpg",
+      "src": "icone_v2.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icone_v2.jpg",
+      "src": "icone_v2.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
@@ -28,9 +28,9 @@
       "url": "index.html",
       "icons": [
         {
-          "src": "icone_v2.jpg",
+          "src": "icone_v2.png",
           "sizes": "192x192",
-          "type": "image/jpeg"
+          "type": "image/png"
         }
       ]
     },
@@ -41,9 +41,9 @@
       "url": "index.html?tela=planilha",
       "icons": [
         {
-          "src": "icone_v2.jpg",
+          "src": "icone_v2.png",
           "sizes": "192x192",
-          "type": "image/jpeg"
+          "type": "image/png"
         }
       ]
     }
