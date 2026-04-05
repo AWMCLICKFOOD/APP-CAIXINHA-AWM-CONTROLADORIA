@@ -19,5 +19,33 @@
       "type": "image/jpeg",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Novo Lançamento",
+      "short_name": "Novo Gasto",
+      "description": "Adicionar nova despesa ou crédito",
+      "url": "index.html",
+      "icons": [
+        {
+          "src": "icone_final.jpg",
+          "sizes": "192x192",
+          "type": "image/jpeg"
+        }
+      ]
+    },
+    {
+      "name": "Ver Planilha",
+      "short_name": "Planilha",
+      "description": "Acessar relatório do caixinha",
+      "url": "index.html?tela=planilha",
+      "icons": [
+        {
+          "src": "icone_final.jpg",
+          "sizes": "192x192",
+          "type": "image/jpeg"
+        }
+      ]
+    }
   ]
 }
