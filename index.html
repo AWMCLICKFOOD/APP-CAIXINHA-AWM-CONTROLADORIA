@@ -23,14 +23,13 @@
         /* ========================================== */
         body { 
             font-family: Arial, sans-serif; background-color: #ccc; margin: 0; display: flex; justify-content: center; padding: 10px; 
-            -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+/Edge */
-            user-select: none; /* Previne seleção de texto no app inteiro */
-            -webkit-touch-callout: none; /* Previne menu ao segurar o toque no celular */
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            -webkit-touch-callout: none; 
         }
         
-        /* Permite que o usuário digite apenas nos campos permitidos */
         input, select, textarea {
             -webkit-user-select: auto;
             -moz-user-select: auto;
@@ -44,7 +43,7 @@
         header { background-color: white; color: var(--azul-wm); padding: 15px 10px; text-align: center; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 10px; border-bottom: 2px solid #ddd; }
         
         .logos-container { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 15px; width: 100%; }
-        .logo-wm { width: 40%; max-width: 150px; height: auto; pointer-events: none; } /* Bloqueia arrastar logo */
+        .logo-wm { width: 40%; max-width: 150px; height: auto; pointer-events: none; } 
         .logo-controladoria { width: 40%; max-width: 150px; height: auto; border-radius: 4px; pointer-events: none; }
         
         .titulo-header { font-size: 15px; color: var(--laranja-wm); margin-top: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
@@ -332,10 +331,8 @@
     // 🛑 SCRIPTS ANTI-XERETA (Bloqueia Cópia e DevTools)
     // ==========================================
     
-    // 1. Bloqueia o Botão Direito do Mouse
     document.addEventListener('contextmenu', event => event.preventDefault());
 
-    // 2. Bloqueia atalhos de desenvolvedor (F12, Ctrl+U, Ctrl+Shift+I, etc)
     document.addEventListener('keydown', function(e) {
         if (e.key === 'F12' || 
            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
@@ -346,11 +343,21 @@
     });
 
     // ==========================================
+    // 👀 LER ATALHOS DO ÍCONE (NOVO / PLANILHA)
+    // ==========================================
+    function verificarAtalhos() {
+        const urlParams = new URLSearchParams(window.location.search);
+        // "tela" é o nome do parâmetro que você colocou lá no manifest.json
+        if (urlParams.get('tela') === 'planilha') {
+            abrirPlanilha(); 
+        }
+    }
+
+    // ==========================================
     // 🔒 CONFIGURAÇÃO DE SENHA DO APP (CAMUFLADA)
     // ==========================================
     
     // A senha atual é "wm2026". A matriz abaixo forma o hash dessa senha secretamente.
-    // Use seu arquivo gerador.html sempre que precisar trocar os números abaixo.
     const _s = [53, 52, 52, 102, 55, 55, 97, 49, 102, 50, 50, 97, 51, 53, 50, 99, 52, 49, 54, 48, 56, 53, 56, 98, 50, 100, 55, 56, 55, 99, 98, 97, 57, 53, 55, 54, 98, 101, 54, 100, 55, 48, 98, 48, 101, 100, 53, 51, 98, 55, 52, 97, 56, 49, 51, 57, 99, 97, 56, 54, 49, 97, 54, 49];
     const HASH_SENHA_MESTRA = String.fromCharCode(..._s);
 
@@ -358,6 +365,7 @@
         const autorizado = localStorage.getItem('acesso_concedido');
         if (autorizado === 'true') {
             document.getElementById('tela-login').style.display = 'none';
+            verificarAtalhos(); // Verifica o atalho se já estiver logado
         }
     };
 
@@ -377,14 +385,12 @@
         if (hashDigitado === HASH_SENHA_MESTRA) {
             localStorage.setItem('acesso_concedido', 'true');
             document.getElementById('tela-login').style.display = 'none';
+            verificarAtalhos(); // Verifica o atalho logo após digitar a senha certa
         } else {
             document.getElementById('erro-login').style.display = 'block';
         }
     }
 
-    // ==========================================
-    // 👀 FUNÇÃO DO OLHINHO DE SENHA
-    // ==========================================
     function mostrarSenha() {
         let input = document.getElementById('senha-input');
         let icone = document.getElementById('icone-olho');
@@ -584,11 +590,8 @@
 
     async function encerrarCaixinha() { 
         if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { 
-            // Apaga as coisas velhas e tira a autorização da senha antiga
             localStorage.clear(); 
-            
-            // Se tiver internet, mata o cache pra obrigar o celular a baixar do GitHub
-            if (navigator.onLine && 'serviceWorker' in navigator) {
+            if ('serviceWorker' in navigator) {
                 try {
                     const nomesCaches = await caches.keys();
                     await Promise.all(nomesCaches.map(nome => caches.delete(nome)));
