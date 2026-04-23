@@ -361,11 +361,8 @@
     const HASH_SENHA_MESTRA = String.fromCharCode(..._s);
 
     window.onload = function() {
-        const autorizado = localStorage.getItem('acesso_concedido');
-        if (autorizado === 'true') {
-            document.getElementById('tela-login').style.display = 'none';
-            verificarAtalhos(); 
-        }
+        // A TELA DE LOGIN AGORA SEMPRE APARECE
+        document.getElementById('tela-login').style.display = 'flex';
     };
 
     async function gerarHash(texto) {
@@ -382,8 +379,10 @@
         const hashDigitado = await gerarHash(senhaDigitada);
 
         if (hashDigitado === HASH_SENHA_MESTRA) {
-            localStorage.setItem('acesso_concedido', 'true');
+            // Removida a gravação da permissão no localStorage
             document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('senha-input').value = ''; // Limpa a senha
+            document.getElementById('erro-login').style.display = 'none';
             verificarAtalhos(); 
         } else {
             document.getElementById('erro-login').style.display = 'block';
