@@ -381,7 +381,7 @@
     let acaoPendente = '';
 
     // ==========================================
-    // INICIALIZAÇÃO ROBUSTA COM SESSÃO E CACHE
+    // INICIALIZAÇÃO ROBUSTA (Bloqueia o botão voltar)
     // ==========================================
     function inicializarAppOffline() {
         if (localStorage.getItem('wm_sessao_ativa') === 'true') {
@@ -390,9 +390,10 @@
                 document.getElementById('tela-principal').style.display = 'block';
             }
         } else {
-            if (document.getElementById('tela-principal').style.display !== 'block' && document.getElementById('tela-planilha').style.display !== 'block') {
-                document.getElementById('tela-login').style.display = 'flex';
-            }
+            // Se não tem sessão, esconde TUDO e força o login (impede a burla do botão voltar)
+            document.getElementById('tela-principal').style.display = 'none';
+            document.getElementById('tela-planilha').style.display = 'none';
+            document.getElementById('tela-login').style.display = 'flex';
         }
         
         calcularSaldo();
@@ -400,12 +401,11 @@
         verificarAtalhos(); 
     }
 
+    // Dispara quando carrega e quando puxa do cache
     document.addEventListener('DOMContentLoaded', inicializarAppOffline);
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-            inicializarAppOffline();
-        }
-    });
+    window.addEventListener('pageshow', function(event) { inicializarAppOffline(); });
+    // Vigia o botão de voltar do navegador/celular para forçar a tela de login
+    window.addEventListener('popstate', function(event) { inicializarAppOffline(); });
 
     async function gerarHash(texto) {
         const encoder = new TextEncoder();
@@ -446,7 +446,7 @@
 
     function salvarPausar() {
         localStorage.setItem('wm_sessao_ativa', 'true');
-        alert('✅ DADOS SALVOS LOCALMENTE COM SUCESSO!');
+        alert('✅ RASCUNHO SALVO COM SUCESSO');
     }
 
     // --- FUNÇÕES DE MODAL DE SENHA PARA AÇÕES ---
@@ -673,26 +673,45 @@
         setTimeout(() => { window.print(); }, 1500); 
     }
 
-    async function encerrarCaixinha() { 
+    // ==========================================
+    // ENCERRAMENTO 100% OFFLINE (Sem recarregar a página)
+    // ==========================================
+    function encerrarCaixinha() { 
         if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { 
-            localStorage.clear(); 
-            // Garante que a sessão é encerrada
-            localStorage.removeItem('wm_sessao_ativa');
             
-            if ('serviceWorker' in navigator) {
-                try {
-                    const nomesCaches = await caches.keys();
-                    await Promise.all(nomesCaches.map(nome => caches.delete(nome)));
-                    const registros = await navigator.serviceWorker.getRegistrations();
-                    for (let registro of registros) {
-                        await registro.unregister();
-                    }
-                    console.log("Limpeza profunda de cache concluída.");
-                } catch (erro) {
-                    console.error("Erro ao limpar cache profundo:", erro);
-                }
-            }
-            window.location.href = window.location.pathname + '?atualizar=' + new Date().getTime();
+            // 1. Apaga tudo da memória
+            localStorage.clear(); 
+            localStorage.removeItem('wm_sessao_ativa'); 
+            
+            // 2. Limpa variáveis e tabelas visualmente
+            banco = [];
+            indiceEdicao = -1;
+            document.getElementById('corpo-tabela').innerHTML = "";
+
+            // 3. Zera os campos da tela
+            document.getElementById('num-caixinha').value = '';
+            document.getElementById('nome-gestor').value = '';
+            document.getElementById('saldo-anterior').value = '';
+            document.getElementById('desc').value = ''; 
+            document.getElementById('valor').value = ''; 
+            document.getElementById('fornecedor').value = '';
+            document.getElementById('foto-doc').value = ''; 
+            document.getElementById('foto-pagto').value = '';
+            document.getElementById('tipo-doc').selectedIndex = 0;
+            document.getElementById('forma-pagto').selectedIndex = 0;
+
+            calcularSaldo();
+            
+            // 4. Esconde as telas e volta pro login na mesma hora
+            document.getElementById('tela-principal').style.display = 'none';
+            document.getElementById('tela-planilha').style.display = 'none';
+            document.getElementById('tela-login').style.display = 'flex';
+            
+            // 5. Zera a senha
+            document.getElementById('senha-input').value = '';
+            document.getElementById('erro-login').style.display = 'none';
+            
+            alert("✅ Caixinha encerrado, dados e sessão apagados com sucesso!");
         } 
     }
 
