@@ -77,9 +77,9 @@
         .btn-ver-planilha { background-color: var(--laranja-wm); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px;}
         
         .area-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
-        .btn-pausar { background-color: #17a2b8; color: white; border: none; padding: 12px; font-size: 14px; border-radius: 5px; flex: 1; font-weight: bold; }
+        .btn-pausar { background-color: #17a2b8; color: white; border: none; padding: 12px; font-size: 14px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer;}
         .btn-whats { background-color: #25D366; color: white; border: none; padding: 15px; font-size: 14px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; cursor: pointer; }
-        .btn-encerrar { background-color: var(--vermelho-neg); color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; margin-top: 5px; }
+        .btn-encerrar { background-color: var(--vermelho-neg); color: white; border: none; padding: 12px; font-size: 13px; border-radius: 5px; flex: 1 1 100%; font-weight: bold; margin-top: 5px; cursor: pointer;}
 
         #tela-planilha { display: none; padding: 10px; background: white; min-height: 90vh; }
         .tabela-container { overflow-x: auto; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; width: 100%; }
@@ -127,13 +127,14 @@
         #modal-foto { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
         #foto-ampliada { max-width: 90%; max-height: 80%; border: 3px solid white; pointer-events: none; }
 
-        /* ESTILOS DA TELA DE LOGIN */
-        #tela-login {
+        /* ESTILOS DA TELA DE LOGIN E MODAL DE AÇÃO */
+        #tela-login, #modal-acao {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--azul-wm);
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
+        #modal-acao { background: rgba(26, 35, 58, 0.9); display: none; }
         .login-box {
             background: white; padding: 25px; border-radius: 10px; width: 85%; max-width: 320px;
             text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
@@ -159,8 +160,27 @@
     </div>
 </div>
 
+<div id="modal-acao">
+    <div class="login-box">
+        <img src="LOGOTIPO.jpg" alt="Logo WM">
+        <h3 style="color: var(--azul-wm); margin-top: 0; margin-bottom: 5px;">ACESSO RESTRITO</h3>
+        <p style="color: #666; font-size: 12px; margin-bottom: 5px;" id="texto-acao-modal">Confirme a senha para continuar</p>
+
+        <div style="position: relative; width: 100%; margin: 15px 0;">
+            <input type="password" id="senha-acao-input" placeholder="SENHA" style="width: 100%; margin: 0; padding-right: 40px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px;">
+            <img id="icone-olho-acao" src="OLHOFECHADO_V2.png" onclick="mostrarSenhaAcao()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; height: 26px; width: 26px; object-fit: contain; pointer-events: auto;" title="Mostrar/Ocultar Senha">
+        </div>
+
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn-salvar" style="flex: 1; font-size: 14px; padding: 12px; margin-top: 5px;" onclick="validarSenhaAcao()">CONFIRMAR</button>
+            <button class="btn-encerrar" style="flex: 1; font-size: 14px; padding: 12px; background-color: #777; margin-top: 5px;" onclick="fecharModalAcao()">CANCELAR</button>
+        </div>
+        <p id="erro-senha-acao" style="color: red; font-size: 13px; font-weight: bold; display: none; margin-top: 15px;">❌ Senha incorreta!</p>
+    </div>
+</div>
+
 <div class="app-container">
-    <div id="tela-principal">
+    <div id="tela-principal" style="display:none;">
         <header>
             <div class="logos-container">
                 <img src="LOGOTIPO.jpg" alt="WM" class="logo-wm">
@@ -181,7 +201,7 @@
                 </div>
                 <div class="linha-saldo" style="border-top: 1px solid #ddd; padding-top: 5px;">
                     <span style="font-weight: bold;">AUDITOR:</span>
-                    <span>Anderson</span>
+                    <span>Anderson e/ou Flávio</span>
                 </div>
             </div>
 
@@ -281,9 +301,9 @@
         </div>
 
         <div class="area-acoes">
-            <button class="btn-pausar" onclick="alert('✅ Salvo localmente!')">💾 Salvar e Pausar</button>
+            <button class="btn-pausar" onclick="salvarPausar()">💾 Salvar e Pausar</button>
             <button class="btn-whats" onclick="gerarPDF()">📲 GERAR PDF PARA COMPARTILHAR</button>
-            <button class="btn-encerrar" onclick="encerrarCaixinha()">🏁 Encerrar o Caixinha e Atualizar</button>
+            <button class="btn-encerrar" onclick="solicitarSenhaAcao('encerrar')">🏁 Encerrar o Caixinha e Atualizar</button>
         </div>
     </div>
 
@@ -302,7 +322,7 @@
             <div class="info-box">
                 <div>
                     <strong>EMPRESA:</strong> WM CONSTRUÇÕES E MONTAGENS<br>
-                    <strong>AUDITOR:</strong> Anderson<br>
+                    <strong>AUDITOR:</strong> Anderson e/ou Flávio<br>
                     <strong>GESTOR:</strong> <span id="print-gestor"></span><br>
                     <strong>Nº DO CAIXINHA:</strong> <span id="print-num"></span>
                 </div>
@@ -355,15 +375,37 @@
     // ==========================================
     // 🔒 CONFIGURAÇÃO DE SENHA DO APP (CAMUFLADA)
     // ==========================================
-    
-    // A senha atual é "wm2026". A matriz abaixo forma o hash dessa senha secretamente.
     const _s = [53, 52, 52, 102, 55, 55, 97, 49, 102, 50, 50, 97, 51, 53, 50, 99, 52, 49, 54, 48, 56, 53, 56, 98, 50, 100, 55, 56, 55, 99, 98, 97, 57, 53, 55, 54, 98, 101, 54, 100, 55, 48, 98, 48, 101, 100, 53, 51, 98, 55, 52, 97, 56, 49, 51, 57, 99, 97, 56, 54, 49, 97, 54, 49];
     const HASH_SENHA_MESTRA = String.fromCharCode(..._s);
 
-    window.onload = function() {
-        // A TELA DE LOGIN AGORA SEMPRE APARECE
-        document.getElementById('tela-login').style.display = 'flex';
-    };
+    let acaoPendente = '';
+
+    // ==========================================
+    // INICIALIZAÇÃO ROBUSTA COM SESSÃO E CACHE
+    // ==========================================
+    function inicializarAppOffline() {
+        if (localStorage.getItem('wm_sessao_ativa') === 'true') {
+            document.getElementById('tela-login').style.display = 'none';
+            if (document.getElementById('tela-planilha').style.display !== 'block') {
+                document.getElementById('tela-principal').style.display = 'block';
+            }
+        } else {
+            if (document.getElementById('tela-principal').style.display !== 'block' && document.getElementById('tela-planilha').style.display !== 'block') {
+                document.getElementById('tela-login').style.display = 'flex';
+            }
+        }
+        
+        calcularSaldo();
+        document.body.offsetHeight; // Força redesenho
+        verificarAtalhos(); 
+    }
+
+    document.addEventListener('DOMContentLoaded', inicializarAppOffline);
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            inicializarAppOffline();
+        }
+    });
 
     async function gerarHash(texto) {
         const encoder = new TextEncoder();
@@ -379,11 +421,11 @@
         const hashDigitado = await gerarHash(senhaDigitada);
 
         if (hashDigitado === HASH_SENHA_MESTRA) {
-            // Removida a gravação da permissão no localStorage
+            localStorage.setItem('wm_sessao_ativa', 'true');
             document.getElementById('tela-login').style.display = 'none';
-            document.getElementById('senha-input').value = ''; // Limpa a senha
+            document.getElementById('tela-principal').style.display = 'block';
+            document.getElementById('senha-input').value = ''; 
             document.getElementById('erro-login').style.display = 'none';
-            verificarAtalhos(); 
         } else {
             document.getElementById('erro-login').style.display = 'block';
         }
@@ -399,6 +441,51 @@
         } else {
             input.type = 'password'; 
             icone.src = 'OLHOFECHADO_V2.png'; 
+        }
+    }
+
+    function salvarPausar() {
+        localStorage.setItem('wm_sessao_ativa', 'true');
+        alert('✅ DADOS SALVOS LOCALMENTE COM SUCESSO!');
+    }
+
+    // --- FUNÇÕES DE MODAL DE SENHA PARA AÇÕES ---
+    function solicitarSenhaAcao(acao) {
+        acaoPendente = acao;
+        document.getElementById('senha-acao-input').value = '';
+        document.getElementById('erro-senha-acao').style.display = 'none';
+        document.getElementById('modal-acao').style.display = 'flex';
+
+        if(acao === 'encerrar') {
+            document.getElementById('texto-acao-modal').innerText = "Senha necessária para ENCERRAR O CAIXINHA";
+        }
+    }
+
+    function fecharModalAcao() {
+        document.getElementById('modal-acao').style.display = 'none';
+        acaoPendente = '';
+    }
+
+    function mostrarSenhaAcao() {
+        let input = document.getElementById('senha-acao-input');
+        let icone = document.getElementById('icone-olho-acao');
+        if (input.type === 'password') { input.type = 'text'; icone.src = 'OLHOABERTO.png'; } 
+        else { input.type = 'password'; icone.src = 'OLHOFECHADO_V2.png'; }
+    }
+
+    async function validarSenhaAcao() {
+        const senhaDigitada = document.getElementById('senha-acao-input').value;
+        const hashDigitado = await gerarHash(senhaDigitada);
+        
+        if (hashDigitado === HASH_SENHA_MESTRA) {
+            document.getElementById('modal-acao').style.display = 'none';
+            
+            if (acaoPendente === 'encerrar') {
+                encerrarCaixinha();
+            }
+            acaoPendente = '';
+        } else {
+            document.getElementById('erro-senha-acao').style.display = 'block';
         }
     }
 
@@ -589,6 +676,9 @@
     async function encerrarCaixinha() { 
         if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { 
             localStorage.clear(); 
+            // Garante que a sessão é encerrada
+            localStorage.removeItem('wm_sessao_ativa');
+            
             if ('serviceWorker' in navigator) {
                 try {
                     const nomesCaches = await caches.keys();
@@ -632,7 +722,10 @@
         });
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
-                navigator.serviceWorker.ready.then(reg => reg.update());
+                document.body.offsetHeight; // Força redesenho
+                if (navigator.serviceWorker) {
+                    navigator.serviceWorker.ready.then(reg => reg.update());
+                }
             }
         });
     }
