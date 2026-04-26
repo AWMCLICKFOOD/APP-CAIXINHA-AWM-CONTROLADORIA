@@ -1,5 +1,5 @@
 const PREFIXO_CACHE = 'caixinha-wm-';
-const CACHE_NAME = PREFIXO_CACHE + 'v12'; 
+const CACHE_NAME = PREFIXO_CACHE + 'v13'; 
 
 const arquivosParaGuardar = [
   './',
@@ -10,7 +10,8 @@ const arquivosParaGuardar = [
   './Captura de tela 2026-02-13 132630.jpg',
   './OLHOABERTO.png',
   './OLHOFECHADO_V2.png',
-  './icone_caixinha.png'
+  './icone_principal_v13.png',
+  './icone_atalho_v13.png'
 ];
 
 self.addEventListener('install', evento => {
