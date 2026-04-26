@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caixinha WM - App e Ver Senha</title>
     
-    <link rel="manifest" href="manifest.json?v=11">
-    <link rel="apple-touch-icon" href="icone_caixinha.png?v=11">
-    <link rel="icon" type="image/png" href="icone_caixinha.png?v=11">
+    <link rel="manifest" href="manifest.json?v=12">
+    <link rel="apple-touch-icon" href="icone_caixinha.png?v=12">
+    <link rel="icon" type="image/png" href="icone_caixinha.png?v=12">
     <meta name="theme-color" content="#1a233a">
 
     <script>
-        // 1. Bloqueia o Botão Direito do Mouse imediatamente
         document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // 2. Bloqueia F12, Inspecionar Elemento, Exibir Código Fonte e Salvar Página
         document.addEventListener('keydown', function(e) {
             if (e.key === 'F12' || 
                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
@@ -34,9 +31,6 @@
             --fundo: #f4f7f6;
         }
 
-        /* ========================================== */
-        /* 🛡️ BLOQUEIO DE SELEÇÃO DE TEXTO NO APP   */
-        /* ========================================== */
         body { 
             font-family: Arial, sans-serif; background-color: #ccc; margin: 0; display: flex; justify-content: center; padding: 10px; 
             -webkit-user-select: none; 
@@ -51,8 +45,8 @@
             -moz-user-select: auto;
             -ms-user-select: auto;
             user-select: auto;
+            transition: border 0.3s ease;
         }
-        /* ========================================== */
 
         .app-container { width: 100%; max-width: 700px; background-color: var(--fundo); min-height: 95vh; border: 8px solid; border-image: linear-gradient(to right, var(--azul-wm) 50%, var(--laranja-wm) 50%) 1; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box; position: relative; }
         
@@ -75,7 +69,8 @@
         input, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
         
         .btn-salvar { background-color: var(--azul-wm); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-ver-planilha { background-color: var(--laranja-wm); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px;}
+        /* COR DO BOTÃO VER PLANILHA ALTERADA PARA VERDE */
+        .btn-ver-planilha { background-color: var(--verde-pos); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px;}
         
         .area-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
         .btn-pausar { background-color: #e67e22; color: white; border: none; padding: 12px; font-size: 14px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer;}
@@ -120,7 +115,6 @@
         #modal-foto { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
         #foto-ampliada { max-width: 90%; max-height: 80%; border: 3px solid white; pointer-events: none; }
 
-        /* ESTILOS DA TELA DE LOGIN E MODAL DE AÇÃO */
         #tela-login, #modal-acao {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--azul-wm);
@@ -222,6 +216,7 @@
         <div class="formulario">
             <label>Categoria: <span style="color:red">*</span></label>
             <select id="categoria" required>
+                <option value="" disabled selected>-- SELECIONE A CATEGORIA --</option>
                 <option value="CRÉDITO WM CONSTRUÇÕES E MONTAGENS">CRÉDITO WM CONSTRUÇÕES E MONTAGENS</option>
                 <option value="Alimentação">Alimentação</option>
                 <option value="Hospedagem">Hospedagem</option>
@@ -263,10 +258,6 @@
                     <option value="Recibo">Recibo</option>
                     <option value="Comanda">Comanda</option>
                     <option value="Orçamento">Orçamento</option>            
-                    <option value="Conta de Energia Elétrica">Conta de Energia Elétrica</option>
-                    <option value="Conta de Água/Esgoto">Conta de Água/Esgoto</option>
-                    <option value="Conta de Telecomunicação/Internet">Conta de Telecomunicação/Internet</option>
-                    <option value="Conta de Fornecimento de Gás">Conta de Fornecimento de Gás</option>
                 </select>
                 
                 <label>📸 Foto da Nota Fiscal: <span style="color:red">*</span></label>
@@ -311,9 +302,9 @@
         </div>
 
         <div class="area-acoes">
-            <button class="btn-pausar" onclick="salvarPausar()">🚪 SAIR DO APP (PAUSAR)</button>
+            <button class="btn-pausar" onclick="salvarPausar()">🚪 SAIR</button>
             <button class="btn-whats" onclick="gerarPDF()">📲 GERAR PDF PARA COMPARTILHAR</button>
-            <button class="btn-encerrar" onclick="solicitarSenhaAcao('encerrar')">🏁 ENCERRAR O CAIXINHA</button>
+            <button class="btn-encerrar" onclick="solicitarSenhaAcao('encerrar')">🗑️ ZERAR TUDO E SAIR</button>
             <button class="btn-whats" onclick="atualizarAppSeguro()" style="background-color: #34495e; margin-top: 5px;">🔄 ATUALIZAR APLICATIVO</button>
         </div>
     </div>
@@ -334,7 +325,7 @@
             <div class="info-box">
                 <div>
                     <strong>EMPRESA:</strong> WM CONSTRUÇÕES E MONTAGENS<br>
-                    <strong>AUDITOR:</strong> Anderson e/ou Flávio<br>
+                    <strong>AUDITOR:</strong> Anderson <br>
                     <strong>GESTOR:</strong> <span id="print-gestor"></span><br>
                     <strong>Nº DO CAIXINHA:</strong> <span id="print-num"></span>
                 </div>
@@ -375,8 +366,20 @@
 
 <script>
     // ==========================================
-    // 👀 LER ATALHOS DO ÍCONE (NOVO / PLANILHA)
+    // FUNÇÃO DE GUIA PARA ERROS DE VALIDAÇÃO
     // ==========================================
+    function focarErro(idOriginal, mensagem) {
+        alert(mensagem);
+        let elemento = document.getElementById(idOriginal);
+        if(elemento) {
+            elemento.scrollIntoView({behavior: "smooth", block: "center"});
+            elemento.focus();
+            let bordaOriginal = elemento.style.border;
+            elemento.style.border = "2px solid red";
+            setTimeout(() => { elemento.style.border = bordaOriginal; }, 3000);
+        }
+    }
+
     function verificarAtalhos() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('tela') === 'planilha') {
@@ -384,17 +387,11 @@
         }
     }
 
-    // ==========================================
-    // 🔒 CONFIGURAÇÃO DE SENHA DO APP (CAMUFLADA)
-    // ==========================================
     const _s = [53, 52, 52, 102, 55, 55, 97, 49, 102, 50, 50, 97, 51, 53, 50, 99, 52, 49, 54, 48, 56, 53, 56, 98, 50, 100, 55, 56, 55, 99, 98, 97, 57, 53, 55, 54, 98, 101, 54, 100, 55, 48, 98, 48, 101, 100, 53, 51, 98, 55, 52, 97, 56, 49, 51, 57, 99, 97, 56, 54, 49, 97, 54, 49];
     const HASH_SENHA_MESTRA = String.fromCharCode(..._s);
 
     let acaoPendente = '';
 
-    // ==========================================
-    // INICIALIZAÇÃO ROBUSTA (Bloqueia o botão voltar)
-    // ==========================================
     function inicializarAppOffline() {
         if (localStorage.getItem('wm_sessao_ativa') === 'true') {
             document.getElementById('tela-login').style.display = 'none';
@@ -408,7 +405,7 @@
         }
         
         calcularSaldo();
-        document.body.offsetHeight; // Força redesenho
+        document.body.offsetHeight; 
         verificarAtalhos(); 
     }
 
@@ -453,21 +450,15 @@
         }
     }
 
-    // ==========================================
-    // LOGICA CORRIGIDA: SAIR DO APP (PAUSAR SESSÃO)
-    // ==========================================
     function salvarPausar() {
-        localStorage.removeItem('wm_sessao_ativa'); // Remove a permissão de acesso direto
-        
+        localStorage.removeItem('wm_sessao_ativa'); 
         document.getElementById('tela-principal').style.display = 'none';
         document.getElementById('tela-planilha').style.display = 'none';
-        document.getElementById('tela-login').style.display = 'flex'; // Volta para a tela de senha
-        
-        document.getElementById('senha-input').value = ''; // Limpa o campo
+        document.getElementById('tela-login').style.display = 'flex'; 
+        document.getElementById('senha-input').value = ''; 
         alert('✅ Sessão pausada com sucesso. Você saiu do aplicativo!');
     }
 
-    // --- FUNÇÕES DE MODAL DE SENHA PARA AÇÕES ---
     function solicitarSenhaAcao(acao) {
         acaoPendente = acao;
         document.getElementById('senha-acao-input').value = '';
@@ -475,7 +466,7 @@
         document.getElementById('modal-acao').style.display = 'flex';
 
         if(acao === 'encerrar') {
-            document.getElementById('texto-acao-modal').innerText = "Senha necessária para ENCERRAR O CAIXINHA";
+            document.getElementById('texto-acao-modal').innerText = "Senha necessária para Zerar tudo e sair";
         }
     }
 
@@ -574,41 +565,50 @@
         let gestor = document.getElementById('nome-gestor').value;
         let saldoAnterior = document.getElementById('saldo-anterior').value;
 
-        // VALIDAÇÃO EXTREMA DO CABEÇALHO
-        if(!numCaixinha || !gestor || saldoAnterior === "") {
-            return alert("⚠️ Atenção: Preencha o Nº do Caixinha, Gestor e Saldo Anterior no topo da tela antes de salvar um lançamento!");
-        }
+        // VERIFICAÇÃO GUIADA COM SCROLL E BORDA VERMELHA
+        if(!numCaixinha) return focarErro('num-caixinha', "⚠️ Atenção: Preencha o Nº do Caixinha!");
+        if(!gestor) return focarErro('nome-gestor', "⚠️ Atenção: Preencha o Nome do Gestor!");
+        if(saldoAnterior === "") return focarErro('saldo-anterior', "⚠️ Atenção: Preencha o Saldo Anterior!");
 
-        let valor = parseFloat(document.getElementById('valor').value);
-        let desc = document.getElementById('desc').value;
-        let fornecedor = document.getElementById('fornecedor').value;
-        let tipoDoc = document.getElementById('tipo-doc').value;
-        let formaPagto = document.getElementById('forma-pagto').value;
+        let categoria = document.getElementById('categoria').value;
+        if(!categoria) return focarErro('categoria', "⚠️ Atenção: Selecione a Categoria!");
         
-        // VALIDAÇÃO EXTREMA DOS CAMPOS DE TEXTO E SELECTS
-        if(!valor || !desc || !fornecedor || tipoDoc === "" || formaPagto === "") {
-            return alert("⚠️ Atenção: Preencha todos os campos obrigatórios (Fornecedor, Descrição, Valor, Tipo de Documento e Forma de Pagamento) para salvar!");
-        }
+        let dataStr = document.getElementById('data').value;
+        if(!dataStr) return focarErro('data', "⚠️ Atenção: Preencha a Data!");
+        
+        let fornecedor = document.getElementById('fornecedor').value;
+        if(!fornecedor) return focarErro('fornecedor', "⚠️ Atenção: Preencha o Fornecedor!");
+        
+        let desc = document.getElementById('desc').value;
+        if(!desc) return focarErro('desc', "⚠️ Atenção: Preencha a Descrição do Gasto/Crédito!");
+        
+        let valorInput = document.getElementById('valor').value;
+        if(!valorInput) return focarErro('valor', "⚠️ Atenção: Preencha o Valor!");
 
+        let tipoDoc = document.getElementById('tipo-doc').value;
+        if(!tipoDoc) return focarErro('tipo-doc', "⚠️ Atenção: Selecione o Tipo de Documento Fiscal!");
+        
         let fotoDocFile = document.getElementById('foto-doc').files[0];
-        let fotoPagtoFile = document.getElementById('foto-pagto').files[0];
+        if (indiceEdicao === -1 && !fotoDocFile) return focarErro('foto-doc', "⚠️ Atenção: É obrigatório anexar a Foto da Nota Fiscal!");
 
-        // VALIDAÇÃO EXTREMA DAS FOTOS (Impede salvar sem os dois arquivos, caso seja um novo registro)
-        if (indiceEdicao === -1 && (!fotoDocFile || !fotoPagtoFile)) {
-            return alert("⚠️ ATENÇÃO: É OBRIGATÓRIO anexar a Foto da Nota Fiscal e a Foto do Pagamento para conseguir salvar o lançamento!");
-        }
+        let formaPagto = document.getElementById('forma-pagto').value;
+        if(!formaPagto) return focarErro('forma-pagto', "⚠️ Atenção: Selecione a Forma de Pagamento!");
+        
+        let fotoPagtoFile = document.getElementById('foto-pagto').files[0];
+        if (indiceEdicao === -1 && !fotoPagtoFile) return focarErro('foto-pagto', "⚠️ Atenção: É obrigatório anexar a Foto do Pagamento!");
+
+        let valor = parseFloat(valorInput);
         
         document.getElementById('btn-salvar-principal').innerText = "⏳ Processando...";
         let fDoc = await comprimirImagem(fotoDocFile);
         let fPag = await comprimirImagem(fotoPagtoFile);
         
-        // RECUPERAR OBSERVAÇÕES
         let obsDoc = document.getElementById('obs-doc').value;
         let obsPagto = document.getElementById('obs-pagto').value;
 
         let item = {
-            categoria: document.getElementById('categoria').value,
-            data: document.getElementById('data').value.split('-').reverse().join('/'),
+            categoria: categoria,
+            data: dataStr.split('-').reverse().join('/'),
             fornecedor: fornecedor,
             descricao: desc,
             valor: valor,
@@ -616,8 +616,8 @@
             formaPagto: formaPagto,
             fotoDoc: fDoc,
             fotoPagto: fPag,
-            obsDoc: obsDoc,      // Salva observação
-            obsPagto: obsPagto  // Salva observação
+            obsDoc: obsDoc,      
+            obsPagto: obsPagto  
         };
         
         if (indiceEdicao >= 0) {
@@ -632,13 +632,14 @@
 
         try {
             localStorage.setItem('wm_despesas', JSON.stringify(banco));
+            document.getElementById('categoria').selectedIndex = 0;
             document.getElementById('desc').value = ''; 
             document.getElementById('valor').value = ''; 
             document.getElementById('fornecedor').value = '';
             document.getElementById('foto-doc').value = ''; 
             document.getElementById('foto-pagto').value = '';
-            document.getElementById('obs-doc').value = '';     // Limpa campo
-            document.getElementById('obs-pagto').value = '';   // Limpa campo
+            document.getElementById('obs-doc').value = '';     
+            document.getElementById('obs-pagto').value = '';   
             document.getElementById('tipo-doc').selectedIndex = 0;
             document.getElementById('forma-pagto').selectedIndex = 0;
             document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
@@ -707,8 +708,8 @@
         document.getElementById('valor').value = it.valor;
         document.getElementById('tipo-doc').value = it.tipoDoc;
         document.getElementById('forma-pagto').value = it.formaPagto;
-        document.getElementById('obs-doc').value = it.obsDoc || "";       // Puxa observação se houver
-        document.getElementById('obs-pagto').value = it.obsPagto || "";   // Puxa observação se houver
+        document.getElementById('obs-doc').value = it.obsDoc || "";       
+        document.getElementById('obs-pagto').value = it.obsPagto || "";   
         indiceEdicao = index;
         document.getElementById('btn-salvar-principal').innerText = "💾 Atualizar Lançamento";
         voltarParaFormulario();
@@ -717,28 +718,23 @@
     function excluir(index) { if(confirm("Excluir definitivamente?")) { banco.splice(index,1); localStorage.setItem('wm_despesas', JSON.stringify(banco)); abrirPlanilha(); calcularSaldo(); } }
     function gerarPDF() { abrirPlanilha(); setTimeout(() => { window.print(); }, 1500); }
 
-    // ==========================================
-    // ENCERRAMENTO 100% OFFLINE E SEGURO
-    // ==========================================
     function encerrarCaixinha() { 
         if(confirm("Zerar tudo? Você perderá todos os dados não enviados!")) { 
             
-            // 1. Apaga APENAS os dados do Caixinha da memória
             localStorage.removeItem('wm_despesas'); 
             localStorage.removeItem('wm_sessao_ativa'); 
             localStorage.removeItem('wm_num');
             localStorage.removeItem('wm_gestor');
             localStorage.removeItem('wm_anterior');
             
-            // 2. Limpa variáveis e tabelas visualmente
             banco = [];
             indiceEdicao = -1;
             document.getElementById('corpo-tabela').innerHTML = "";
 
-            // 3. Zera os campos da tela
             document.getElementById('num-caixinha').value = '';
             document.getElementById('nome-gestor').value = '';
             document.getElementById('saldo-anterior').value = '';
+            document.getElementById('categoria').selectedIndex = 0;
             document.getElementById('desc').value = ''; 
             document.getElementById('valor').value = ''; 
             document.getElementById('fornecedor').value = '';
@@ -751,12 +747,10 @@
 
             calcularSaldo();
             
-            // 4. Esconde as telas e volta pro login na mesma hora
             document.getElementById('tela-principal').style.display = 'none';
             document.getElementById('tela-planilha').style.display = 'none';
             document.getElementById('tela-login').style.display = 'flex';
             
-            // 5. Zera a senha
             document.getElementById('senha-input').value = '';
             document.getElementById('erro-login').style.display = 'none';
             
@@ -764,23 +758,18 @@
         } 
     }
 
-    // ==========================================
-    // 🔄 FUNÇÃO DE ATUALIZAÇÃO SEGURA DO APLICATIVO
-    // ==========================================
     async function atualizarAppSeguro() {
         if(confirm("Deseja buscar a versão mais recente do aplicativo? (Seus dados salvos NÃO serão perdidos)")) {
             if ('caches' in window) {
                 try {
                     const nomesCaches = await caches.keys();
                     await Promise.all(nomesCaches.map(nome => {
-                        // Apaga SOMENTE o cache do Caixinha para forçar o download novo
                         if (nome.startsWith('caixinha-wm-')) return caches.delete(nome);
                     }));
                 } catch (e) {
                     console.error("Erro ao limpar o cache isolado:", e);
                 }
             }
-            // Recarrega a página forçando ignorar o cache antigo no navegador
             window.location.href = window.location.pathname + '?atualizar=' + new Date().getTime();
         }
     }
