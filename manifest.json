@@ -8,19 +8,19 @@
   "theme_color": "#1a233a",
   "icons": [
     {
-      "src": "icone_caixinha.png?v=12",
+      "src": "icone_principal_v13.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icone_caixinha.png?v=12",
+      "src": "icone_principal_v13.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icone_caixinha.png?v=12",
+      "src": "icone_principal_v13.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -34,7 +34,7 @@
       "url": "./index.html",
       "icons": [
         {
-          "src": "icone_caixinha.png?v=12",
+          "src": "icone_atalho_v13.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -47,7 +47,7 @@
       "url": "./index.html?tela=planilha",
       "icons": [
         {
-          "src": "icone_caixinha.png?v=12",
+          "src": "icone_atalho_v13.png",
           "sizes": "192x192",
           "type": "image/png"
         }
