@@ -1,5 +1,5 @@
 const PREFIXO_CACHE = 'caixinha-wm-';
-const CACHE_NAME = PREFIXO_CACHE + 'v11'; 
+const CACHE_NAME = PREFIXO_CACHE + 'v12'; 
 
 const arquivosParaGuardar = [
   './',
