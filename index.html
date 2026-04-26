@@ -271,6 +271,11 @@
                 <label>📸 Foto da Nota Fiscal: <span style="color:red">*</span></label>
                 <span style="font-size: 11px; color: #666; display: block; margin-bottom: 5px; font-style: italic;">Obrigatório: Tire a foto ou anexe o documento fiscal.</span>
                 <input type="file" id="foto-doc" accept="image/*" capture="environment" required>
+                
+                <div style="margin-top: 10px;">
+                    <label style="font-size: 12px; margin-bottom: 3px;">Observação da Nota (Opcional):</label>
+                    <textarea id="obs-doc" rows="2" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-weight: normal; font-size: 12px;" placeholder="Ex: Nota rasurada, faltando carimbo..."></textarea>
+                </div>
             </div>
 
             <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px solid #eee; margin-top: 10px;">
@@ -293,6 +298,11 @@
                 <label>📸 Foto do Pagamento: <span style="color:red">*</span></label>
                 <span style="font-size: 11px; color: #666; display: block; margin-bottom: 5px; font-style: italic;">Obrigatório: Anexe o comprovante de pagamento.</span>
                 <input type="file" id="foto-pagto" accept="image/*" capture="environment" required>
+                
+                <div style="margin-top: 10px;">
+                    <label style="font-size: 12px; margin-bottom: 3px;">Observação do Pagamento (Opcional):</label>
+                    <textarea id="obs-pagto" rows="2" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-weight: normal; font-size: 12px;" placeholder="Ex: Pago por terceiros, aguardando compensação..."></textarea>
+                </div>
             </div>
 
             <button class="btn-salvar" id="btn-salvar-principal" onclick="salvarDespesa()">➕ Salvar na Lista</button>
@@ -590,6 +600,10 @@
         document.getElementById('btn-salvar-principal').innerText = "⏳ Processando...";
         let fDoc = await comprimirImagem(fotoDocFile);
         let fPag = await comprimirImagem(fotoPagtoFile);
+        
+        // RECUPERAR OBSERVAÇÕES
+        let obsDoc = document.getElementById('obs-doc').value;
+        let obsPagto = document.getElementById('obs-pagto').value;
 
         let item = {
             categoria: document.getElementById('categoria').value,
@@ -600,7 +614,9 @@
             tipoDoc: tipoDoc,
             formaPagto: formaPagto,
             fotoDoc: fDoc,
-            fotoPagto: fPag
+            fotoPagto: fPag,
+            obsDoc: obsDoc,     // Salva observação
+            obsPagto: obsPagto  // Salva observação
         };
         
         if (indiceEdicao >= 0) {
@@ -620,6 +636,8 @@
             document.getElementById('fornecedor').value = '';
             document.getElementById('foto-doc').value = ''; 
             document.getElementById('foto-pagto').value = '';
+            document.getElementById('obs-doc').value = '';     // Limpa campo
+            document.getElementById('obs-pagto').value = '';   // Limpa campo
             document.getElementById('tipo-doc').selectedIndex = 0;
             document.getElementById('forma-pagto').selectedIndex = 0;
             document.getElementById('btn-salvar-principal').innerText = "➕ Salvar na Lista";
@@ -688,6 +706,8 @@
         document.getElementById('valor').value = it.valor;
         document.getElementById('tipo-doc').value = it.tipoDoc;
         document.getElementById('forma-pagto').value = it.formaPagto;
+        document.getElementById('obs-doc').value = it.obsDoc || "";       // Puxa observação se houver
+        document.getElementById('obs-pagto').value = it.obsPagto || "";   // Puxa observação se houver
         indiceEdicao = index;
         document.getElementById('btn-salvar-principal').innerText = "💾 Atualizar Lançamento";
         voltarParaFormulario();
@@ -723,6 +743,8 @@
             document.getElementById('fornecedor').value = '';
             document.getElementById('foto-doc').value = ''; 
             document.getElementById('foto-pagto').value = '';
+            document.getElementById('obs-doc').value = ''; 
+            document.getElementById('obs-pagto').value = ''; 
             document.getElementById('tipo-doc').selectedIndex = 0;
             document.getElementById('forma-pagto').selectedIndex = 0;
 
