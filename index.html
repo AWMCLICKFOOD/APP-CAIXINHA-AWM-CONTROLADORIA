@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caixinha WM - App e Ver Senha</title>
     
-    <link rel="manifest" href="manifest.json?v=13">
-    <link rel="apple-touch-icon" href="icone_principal_v13.png?v=13">
-    <link rel="icon" type="image/png" href="icone_principal_v13.png?v=13">
+    <link rel="manifest" href="manifest.json?v=14">
+    <link rel="apple-touch-icon" href="icone_principal_v14.png?v=14">
+    <link rel="icon" type="image/png" href="icone_principal_v14.png?v=14">
     <meta name="theme-color" content="#1a233a">
 
     <script>
@@ -30,6 +30,9 @@
             --vermelho-neg: #dc3545;
             --fundo: #f4f7f6;
         }
+
+        /* Trava o scroll da tela quando o modal está aberto */
+        .no-scroll { overflow: hidden !important; height: 100vh !important; }
 
         body { 
             font-family: Arial, sans-serif; background-color: #ccc; margin: 0; display: flex; justify-content: center; padding: 10px; 
@@ -116,11 +119,11 @@
 
         #tela-login, #modal-acao {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--azul-wm);
+            background: #000000; /* Fundo sólido e escuro */
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        #modal-acao { background: rgba(26, 35, 58, 0.9); display: none; }
+        #modal-acao { display: none; }
         .login-box {
             background: white; padding: 25px; border-radius: 10px; width: 85%; max-width: 320px;
             text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
@@ -159,7 +162,7 @@
 
         <div style="display: flex; gap: 10px; width: 100%;">
             <button class="btn-salvar" style="flex: 1; font-size: 14px; padding: 12px; margin-top: 5px;" onclick="validarSenhaAcao()">CONFIRMAR</button>
-            <button class="btn-encerrar" style="flex: 1; font-size: 14px; padding: 12px; background-color: #777; margin-top: 5px;" onclick="fecharModalAcao()">CANCELAR</button>
+            <button class="btn-salvar" style="flex: 1; font-size: 14px; padding: 12px; margin-top: 5px;" onclick="fecharModalAcao()">CANCELAR</button>
         </div>
         <p id="erro-senha-acao" style="color: red; font-size: 13px; font-weight: bold; display: none; margin-top: 15px;">❌ Senha incorreta!</p>
     </div>
@@ -296,7 +299,7 @@
                 
                 <div style="margin-top: 10px;">
                     <label style="font-size: 12px; margin-bottom: 3px;">Observação do Pagamento (Opcional):</label>
-                    <textarea id="obs-pagto" rows="2" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-weight: normal; font-size: 12px;" placeholder="Ex: Pago por terceiros, aguardando compensação..."></textarea>
+                    <textarea id="obs-pagto" rows="2" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-weight: normal; font-size: 12px;" placeholder="Ex: Pagamento em dinheiro vivo, PIX feito na conta da esposa do dono, adiantamento..."></textarea>
                 </div>
             </div>
 
@@ -368,6 +371,17 @@
 </div>
 
 <script>
+    // ==========================================
+    // FUNÇÃO QUE TRAVA A TELA E RESOLVE O SCROLL
+    // ==========================================
+    function toggleBodyScroll(lock) {
+        if (lock) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+    }
+
     function focarErro(idOriginal, mensagem) {
         alert(mensagem);
         let elemento = document.getElementById(idOriginal);
@@ -395,6 +409,7 @@
     function inicializarAppOffline() {
         if (localStorage.getItem('wm_sessao_ativa') === 'true') {
             document.getElementById('tela-login').style.display = 'none';
+            toggleBodyScroll(false); // Libera o scroll
             if (document.getElementById('tela-planilha').style.display !== 'block') {
                 document.getElementById('tela-principal').style.display = 'block';
             }
@@ -402,6 +417,7 @@
             document.getElementById('tela-principal').style.display = 'none';
             document.getElementById('tela-planilha').style.display = 'none';
             document.getElementById('tela-login').style.display = 'flex';
+            toggleBodyScroll(true); // Trava o scroll no login
         }
         
         calcularSaldo();
@@ -432,6 +448,7 @@
             document.getElementById('tela-principal').style.display = 'block';
             document.getElementById('senha-input').value = ''; 
             document.getElementById('erro-login').style.display = 'none';
+            toggleBodyScroll(false); // Libera o scroll
         } else {
             document.getElementById('erro-login').style.display = 'block';
         }
@@ -456,6 +473,7 @@
         document.getElementById('tela-planilha').style.display = 'none';
         document.getElementById('tela-login').style.display = 'flex'; 
         document.getElementById('senha-input').value = ''; 
+        toggleBodyScroll(true); // Trava o scroll de volta
         alert('✅ Sessão pausada com sucesso. Você saiu do aplicativo!');
     }
 
@@ -464,7 +482,8 @@
         document.getElementById('senha-acao-input').value = '';
         document.getElementById('erro-senha-acao').style.display = 'none';
         document.getElementById('modal-acao').style.display = 'flex';
-
+        toggleBodyScroll(true); // Trava a tela
+        
         if(acao === 'encerrar') {
             document.getElementById('texto-acao-modal').innerText = "Senha necessária para Zerar tudo e sair";
         }
@@ -473,6 +492,7 @@
     function fecharModalAcao() {
         document.getElementById('modal-acao').style.display = 'none';
         acaoPendente = '';
+        toggleBodyScroll(false); // Libera a tela
     }
 
     function mostrarSenhaAcao() {
@@ -488,6 +508,7 @@
         
         if (hashDigitado === HASH_SENHA_MESTRA) {
             document.getElementById('modal-acao').style.display = 'none';
+            toggleBodyScroll(false); // Libera a tela
             
             if (acaoPendente === 'encerrar') {
                 encerrarCaixinha();
@@ -749,6 +770,7 @@
             document.getElementById('tela-principal').style.display = 'none';
             document.getElementById('tela-planilha').style.display = 'none';
             document.getElementById('tela-login').style.display = 'flex';
+            toggleBodyScroll(true); // Trava o scroll de volta no login
             
             document.getElementById('senha-input').value = '';
             document.getElementById('erro-login').style.display = 'none';
