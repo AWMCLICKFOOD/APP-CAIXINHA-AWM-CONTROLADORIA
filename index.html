@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caixinha WM - App e Ver Senha</title>
     
-    <link rel="manifest" href="manifest.json?v=12">
-    <link rel="apple-touch-icon" href="icone_caixinha.png?v=12">
-    <link rel="icon" type="image/png" href="icone_caixinha.png?v=12">
+    <link rel="manifest" href="manifest.json?v=13">
+    <link rel="apple-touch-icon" href="icone_principal_v13.png?v=13">
+    <link rel="icon" type="image/png" href="icone_principal_v13.png?v=13">
     <meta name="theme-color" content="#1a233a">
 
     <script>
@@ -69,7 +69,6 @@
         input, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
         
         .btn-salvar { background-color: var(--azul-wm); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        /* COR DO BOTÃO VER PLANILHA ALTERADA PARA VERDE */
         .btn-ver-planilha { background-color: var(--verde-pos); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px;}
         
         .area-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -258,6 +257,10 @@
                     <option value="Recibo">Recibo</option>
                     <option value="Comanda">Comanda</option>
                     <option value="Orçamento">Orçamento</option>            
+                    <option value="Conta de Energia Elétrica">Conta de Energia Elétrica</option>
+                    <option value="Conta de Água/Esgoto">Conta de Água/Esgoto</option>
+                    <option value="Conta de Telecomunicação/Internet">Conta de Telecomunicação/Internet</option>
+                    <option value="Conta de Fornecimento de Gás">Conta de Fornecimento de Gás</option>
                 </select>
                 
                 <label>📸 Foto da Nota Fiscal: <span style="color:red">*</span></label>
@@ -365,9 +368,6 @@
 </div>
 
 <script>
-    // ==========================================
-    // FUNÇÃO DE GUIA PARA ERROS DE VALIDAÇÃO
-    // ==========================================
     function focarErro(idOriginal, mensagem) {
         alert(mensagem);
         let elemento = document.getElementById(idOriginal);
@@ -565,7 +565,6 @@
         let gestor = document.getElementById('nome-gestor').value;
         let saldoAnterior = document.getElementById('saldo-anterior').value;
 
-        // VERIFICAÇÃO GUIADA COM SCROLL E BORDA VERMELHA
         if(!numCaixinha) return focarErro('num-caixinha', "⚠️ Atenção: Preencha o Nº do Caixinha!");
         if(!gestor) return focarErro('nome-gestor', "⚠️ Atenção: Preencha o Nome do Gestor!");
         if(saldoAnterior === "") return focarErro('saldo-anterior', "⚠️ Atenção: Preencha o Saldo Anterior!");
