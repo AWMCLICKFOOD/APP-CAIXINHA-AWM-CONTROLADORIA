@@ -1,5 +1,5 @@
 const PREFIXO_CACHE = 'caixinha-wm-';
-const CACHE_NAME = PREFIXO_CACHE + 'v17'; 
+const CACHE_NAME = PREFIXO_CACHE + 'v18';
 
 const arquivosParaGuardar = [
   './',
@@ -7,11 +7,10 @@ const arquivosParaGuardar = [
   './manifest.json',
   './sw.js',
   './LOGOTIPO.jpg',
-  './Captura de tela 2026-02-13 132630.jpg',
+  './controladoria.jpg',
   './OLHOABERTO.png',
   './OLHOFECHADO_V2.png',
-  './icone_principal_v14.png',
-  './atalho_caixa_192.png'
+  './icone_principal_v14.png'
 ];
 
 self.addEventListener('install', evento => {
@@ -28,7 +27,6 @@ self.addEventListener('activate', evento => {
       return Promise.all(
         nomesCaches.map(nomeCache => {
           if (nomeCache.startsWith(PREFIXO_CACHE) && nomeCache !== CACHE_NAME) {
-            console.log('Apagando cache antigo do Caixinha:', nomeCache);
             return caches.delete(nomeCache);
           }
         })
@@ -42,10 +40,8 @@ self.addEventListener('fetch', evento => {
   evento.respondWith(
     caches.match(evento.request, { ignoreSearch: true })
       .then(respostaCache => {
-        if (respostaCache) {
-          return respostaCache; 
-        }
-        
+        if (respostaCache) return respostaCache;
+
         return fetch(evento.request).then(respostaRede => {
           return caches.open(CACHE_NAME).then(cache => {
             if (evento.request.method === 'GET' && respostaRede.status === 200) {
