@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caixinha WM - App e Ver Senha</title>
     
-    <link rel="manifest" href="manifest.json?v=16">
-    <link rel="apple-touch-icon" href="icone_principal_v14.png?v=16">
-    <link rel="icon" type="image/png" href="icone_principal_v14.png?v=16">
+    <link rel="manifest" href="manifest.json?v=17">
+    <link rel="apple-touch-icon" href="icone_principal_v14.png">
+    <link rel="icon" type="image/png" href="icone_principal_v14.png">
     <meta name="theme-color" content="#1a233a">
 
     <script>
@@ -21,6 +21,17 @@
             }
         });
     </script>
+
+    ```
+
+### O Último Passo Mágico
+Como o Android gravou os atalhos com erro e não atualiza os atalhos automaticamente:
+1. **Desinstale o app CAIXINHA do seu celular (jogue o ícone na lixeira).**
+2. Abra o Chrome e vá em **Configurações > Configurações do site > Dados armazenados**.
+3. Pesquise pelo link do seu app e apague tudo.
+4. Abra o site de novo e faça a Instalação limpa.
+
+Agora, o Android vai ler o `manifest.json` do mesmo jeito que lia no seu arquivo antigo, sem se confundir!
     
     <style>
         :root {
