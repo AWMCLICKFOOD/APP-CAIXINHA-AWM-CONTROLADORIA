@@ -57,8 +57,8 @@
         header { background-color: white; color: var(--azul-wm); padding: 15px 10px; text-align: center; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 10px; border-bottom: 2px solid #ddd; }
         
         .logos-container { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 10px; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box; padding: 0 5px; }
-        .logo-wm { width: 48%; max-width: 150px; height: auto; pointer-events: none; } 
-        .logo-controladoria { width: 48%; max-width: 150px; height: auto; border-radius: 4px; pointer-events: none; }
+        .logo-wm { width: 48%; max-width: 150px; height: auto; pointer-events: none; object-fit: contain; } 
+        .logo-controladoria { width: 48%; max-width: 150px; height: auto; border-radius: 4px; pointer-events: none; object-fit: contain; }
         
         .titulo-header { font-size: 15px; color: var(--laranja-wm); margin-top: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
 
@@ -102,18 +102,22 @@
             .app-container { border: none !important; box-shadow: none !important; max-width: 100% !important; width: 100% !important; display: block !important; height: auto !important; min-height: auto !important; overflow: visible !important; padding: 0 !important; margin: 0 !important; }
             .formulario, .area-acoes, .btn-voltar, .btn-ver-planilha, th:last-child, td:last-child { display: none !important; }
             #tela-planilha, .tabela-container { display: block !important; overflow: visible !important; overflow-x: visible !important; overflow-y: visible !important; height: auto !important; width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; }
-            table { display: table !important; font-size: 10px !important; width: 100% !important; min-width: auto !important; max-width: 100% !important; page-break-inside: auto; margin-top: 0 !important; table-layout: fixed !important; word-wrap: break-word !important; }
-            .cabecalho-oficial { margin-bottom: 2px !important; padding-bottom: 2px !important; }
+            table { display: table !important; font-size: 9px !important; width: 100% !important; min-width: auto !important; max-width: 100% !important; page-break-inside: auto; margin-top: 0 !important; table-layout: auto !important; word-wrap: normal !important; }
+            #cabecalho-pdf > div:first-child { padding-bottom: 2px !important; margin-bottom: 0 !important; }
+            #cabecalho-pdf > div:first-child img { height: 32px !important; max-height: 32px !important; width: auto !important; max-width: 45% !important; object-fit: contain !important; }
+            .texto-cabecalho { padding-bottom: 3px !important; margin-bottom: 3px !important; line-height: 1.1 !important; }
+            .texto-cabecalho h3 { font-size: 13px !important; margin: 0 !important; }
+            .texto-cabecalho small { font-size: 8px !important; margin-top: 1px !important; }
+            .cabecalho-oficial { display: block !important; border: 1px solid #000 !important; padding: 4px !important; margin-bottom: 2px !important; border-radius: 0 !important; line-height: 1.15 !important; }
+            .cabecalho-oficial .info-box { grid-template-columns: 1fr 1fr !important; gap: 4px !important; margin-top: 2px !important; padding-top: 2px !important; font-size: 10px !important; }
             .tabela-container { margin-top: 0 !important; }
             img { display: block !important; margin: 0 auto !important; max-width: 100% !important; height: auto !important; }
             tr { display: table-row !important; page-break-inside: avoid; page-break-after: auto; }
-            th, td { display: table-cell !important; padding: 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important; white-space: normal !important; }
+            th, td { display: table-cell !important; padding: 3px !important; word-wrap: normal !important; overflow-wrap: normal !important; white-space: nowrap !important; }
             thead { display: table-header-group !important; }
             tfoot { display: table-footer-group !important; }
             tbody { display: table-row-group !important; }
-            .cabecalho-oficial { display: block !important; border: 1px solid #000 !important; padding: 4px !important; padding-bottom: 2px !important; margin-bottom: 2px !important; border-radius: 0 !important; }
-            .cabecalho-oficial .info-box { grid-template-columns: 1fr 1fr !important; }
-            .foto-miniatura { width: 80px !important; height: auto !important; max-height: 80px !important; object-fit: contain !important; }
+            .foto-miniatura { width: 45px !important; height: auto !important; max-height: 45px !important; object-fit: contain !important; }
             .anexo-box { border: none !important; padding: 0 !important; background: transparent !important; margin-bottom: 2px !important; }
             .legenda-foto { font-size: 9px !important; }
         }
@@ -175,7 +179,7 @@
         <header>
             <div class="logos-container">
                 <img src="LOGOTIPO.jpg" alt="WM" class="logo-wm">
-                <img src="controladoria.jpg" alt="Controladoria" class="logo-controladoria">
+                <img src="controladoria.jpg" onerror="this.onerror=null;this.src='Captura%20de%20tela%202026-02-13%20132630.jpg';" alt="Controladoria" class="logo-controladoria">
             </div>
             <div class="titulo-header">✨ GESTÃO INTELIGENTE DE CAIXINHA ✨</div>
         </header>
@@ -323,7 +327,7 @@
         <div class="cabecalho-oficial" id="cabecalho-pdf">
             <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px;">
                 <img src="LOGOTIPO.jpg" style="height: 45px; max-width: 48%; object-fit: contain; border-radius: 4px;">
-                <img src="controladoria.jpg" style="height: 45px; max-width: 48%; object-fit: contain; border-radius: 4px;">
+                <img src="controladoria.jpg" onerror="this.onerror=null;this.src='Captura%20de%20tela%202026-02-13%20132630.jpg';" style="height: 45px; max-width: 48%; object-fit: contain; border-radius: 4px;">
             </div>
             <div class="texto-cabecalho" style="border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 8px; text-align: center;">
                 <h3 style="margin: 0; font-size: 16px;">RELATÓRIO DE CAIXINHA</h3>
