@@ -28,7 +28,7 @@
       "url": "./index.html",
       "icons": [
         {
-          "src": "icone_atalho_caixa.png",
+          "src": "atalho_caixa_192.png?v=16",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -41,7 +41,7 @@
       "url": "./index.html?tela=planilha",
       "icons": [
         {
-          "src": "icone_atalho_caixa.png",
+          "src": "atalho_caixa_192.png?v=16",
           "sizes": "192x192",
           "type": "image/png"
         }
