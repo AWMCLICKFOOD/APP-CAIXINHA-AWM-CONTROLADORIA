@@ -24,6 +24,7 @@
     {
       "name": "Novo Lançamento",
       "short_name": "Novo",
+      "description": "Adicionar nova despesa ou crédito",
       "url": "./index.html",
       "icons": [
         {
@@ -36,6 +37,7 @@
     {
       "name": "Ver Planilha",
       "short_name": "Planilha",
+      "description": "Acessar relatório do caixinha",
       "url": "./index.html?tela=planilha",
       "icons": [
         {
